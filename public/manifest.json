@@ -1,0 +1,14 @@
+{
+  "name": "Roblox Request — by wanz",
+  "short_name": "Roblox Request",
+  "description": "Request lagu & banner Roblox, terhubung langsung ke Telegram admin.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#03050d",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
