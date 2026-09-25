@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Login — Roblox Request Id Cor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p:#e5e5e5;--p2:#ffffff;--b:#a3a3a3;--g:#e5e5e5;--bg:#000000;--card:rgba(255,255,255,.03);--border:rgba(255,255,255,.12);--muted:#8a8a8a;--dim:#525252}
+html{scroll-behavior:smooth}
+body{min-height:100vh;background:var(--bg);font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-x:hidden;padding:20px}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:50px 50px;animation:gridMove 20s linear infinite}
+@keyframes gridMove{to{transform:translate(50px,50px)}}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);animation:orbFloat 10s ease-in-out infinite}
+.o1{width:600px;height:600px;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);top:-200px;left:-200px}
+.o2{width:500px;height:500px;background:radial-gradient(circle,rgba(255,255,255,.11),transparent 70%);bottom:-150px;right:-150px;animation-delay:-4s}
+.o3{width:280px;height:280px;background:radial-gradient(circle,rgba(255,255,255,.09),transparent 70%);top:40%;left:50%;animation-delay:-7s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-20px)}}
+.particles{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.pt{position:absolute;width:2px;height:2px;background:rgba(255,255,255,.4);border-radius:50%;animation:ptFloat linear infinite}
+@keyframes ptFloat{0%{transform:translateY(100vh);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) translateX(60px);opacity:0}}
+
+.wrapper{position:relative;z-index:1;width:100%;max-width:400px}
+header{text-align:center;margin-bottom:28px}
+.logo-outer{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#4a4a4a,#e5e5e5,#ffffff);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;position:relative;animation:logoPulse 3s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.4),0 8px 32px rgba(255,255,255,.4)}50%{box-shadow:0 0 0 14px rgba(255,255,255,0),0 12px 48px rgba(255,255,255,.6)}}
+.logo-outer::before{content:'';position:absolute;inset:-3px;background:linear-gradient(135deg,#666666,#ffffff,#999999,#666666);border-radius:23px;z-index:-1;animation:borderSpin 4s linear infinite;filter:blur(4px)}
+@keyframes borderSpin{to{transform:rotate(360deg)}}
+.logo-inner{width:68px;height:68px;background:var(--bg);border-radius:18px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
+.logo-svg{width:34px;height:34px;stroke:#e5e5e5;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.4rem,5vw,1.7rem);font-weight:800;color:#ffffff;letter-spacing:-.5px;margin-bottom:4px}
+.subtitle{font-size:12px;color:var(--muted)}
+.wanz-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;background:linear-gradient(135deg,rgba(255,255,255,.15),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.3);border-radius:20px;font-size:11px;font-weight:700;color:#e5e5e5;letter-spacing:.07em;margin-top:8px}
+.wanz-dot{width:6px;height:6px;border-radius:50%;background:#e5e5e5;animation:dotBlink 1.5s infinite}
+@keyframes dotBlink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:32px 28px;backdrop-filter:blur(40px);box-shadow:0 0 0 1px rgba(255,255,255,.02),0 40px 80px rgba(0,0,0,.5),0 0 60px rgba(255,255,255,.04);animation:cardIn .7s cubic-bezier(.34,1.56,.64,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none}}
+
+.card h2{font-family:'Space Grotesk',sans-serif;font-size:17px;color:#f1f5f9;margin-bottom:6px;font-weight:700}
+.card p{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+
+.field{margin-bottom:16px}
+.field-label{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+.input-wrap{position:relative}
+.input-wrap input{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px 14px 12px 44px;color:#f1f5f9;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all .25s;-webkit-appearance:none}
+.input-wrap input::placeholder{color:#1e3a5f}
+.input-wrap input:focus{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.05);box-shadow:0 0 0 3px rgba(255,255,255,.1)}
+.input-wrap input.error-field{border-color:rgba(239,68,68,.5)!important}
+.iico{position:absolute;left:13px;top:50%;transform:translateY(-50%);stroke:#475569;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:17px;height:17px;transition:stroke .25s;pointer-events:none}
+.input-wrap:focus-within .iico{stroke:#e5e5e5}
+
+.error-msg{font-size:11px;color:#f87171;margin-top:5px;display:none}
+.error-msg.show{display:block}
+
+.btn-submit{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#e5e5e5,#ffffff);color:#111;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;position:relative;overflow:hidden;transition:all .25s;box-shadow:0 4px 20px rgba(255,255,255,.15);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-submit::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,0,0,.08),transparent);animation:shimmer 2.5s infinite}
+@keyframes shimmer{to{left:200%}}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,255,255,.25)}
+
+.admin-hint{text-align:center;margin-top:16px;font-size:11px;color:var(--dim)}
+.admin-hint a{color:#e5e5e5;text-decoration:none;font-weight:600}
+.admin-hint a:hover{color:#ffffff}
+
+footer{margin-top:24px;text-align:center;font-size:11px;color:#1e293b;letter-spacing:.05em}
+footer span{color:#e5e5e5;font-weight:600}
+
+/* ── TICKET WIDGET (Chat CS/Admin) ── */
+.tk-fab{position:fixed;bottom:22px;right:18px;z-index:500;width:56px;height:56px;border-radius:50%;background:#e5e5e5;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.5);transition:transform .2s}
+.tk-fab:hover{transform:scale(1.07)}
+.tk-fab svg{width:24px;height:24px;fill:#111}
+.tk-fab .tk-badge{position:absolute;top:-3px;right:-3px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid #000000}
+.tk-fab .tk-badge.show{display:flex}
+.tk-overlay{position:fixed;inset:0;z-index:501;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.tk-overlay.show{opacity:1;pointer-events:all}
+@media(min-width:560px){.tk-overlay{align-items:center}}
+.tk-box{width:100%;max-width:420px;max-height:88vh;background:#0a0a0a;border:1px solid rgba(255,255,255,.12);border-radius:20px 20px 0 0;display:flex;flex-direction:column;box-shadow:0 -10px 50px rgba(0,0,0,.6);transform:translateY(20px);transition:transform .25s}
+@media(min-width:560px){.tk-box{border-radius:20px;transform:translateY(0) scale(.96)}}
+.tk-overlay.show .tk-box{transform:translateY(0) scale(1)}
+.tk-head{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tk-head .tk-ico{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tk-head h3{font-size:14px;color:#f1f5f9;font-weight:700}
+.tk-head p{font-size:11px;color:var(--muted)}
+.tk-close{margin-left:auto;width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.05);border:none;color:#94a3b8;font-size:16px;cursor:pointer;flex-shrink:0}
+.tk-body{flex:1;overflow-y:auto;padding:16px 18px;min-height:160px}
+.tk-form .field{margin-bottom:14px}
+.tk-input,.tk-textarea{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:11px 13px;color:#f1f5f9;font-size:13px;font-family:inherit;outline:none}
+.tk-input:focus,.tk-textarea:focus{border-color:rgba(255,255,255,.4)}
+.tk-textarea{resize:vertical}
+.tk-submit{width:100%;padding:12px;border:none;border-radius:11px;background:linear-gradient(135deg,#e5e5e5,#ffffff);color:#111;font-weight:700;font-size:13px;cursor:pointer}
+.tk-submit:disabled{opacity:.6;cursor:not-allowed}
+.tk-status-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5}
+.tk-msgs{display:flex;flex-direction:column;gap:10px}
+.tk-msg{max-width:80%;padding:9px 13px;border-radius:13px;font-size:13px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.tk-msg.user{align-self:flex-end;background:linear-gradient(135deg,#e5e5e5,#ffffff);color:#111;border-radius:13px 13px 3px 13px}
+.tk-msg.admin{align-self:flex-start;background:rgba(255,255,255,.06);color:#e2e8f0;border-radius:13px 13px 13px 3px}
+.tk-msg .tk-time{display:block;font-size:9.5px;opacity:.65;margin-top:4px}
+.tk-empty{text-align:center;font-size:12px;color:var(--muted);padding:30px 0}
+.tk-foot{padding:12px 14px;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:8px;align-items:flex-end}
+.tk-foot textarea{flex:1;resize:none;max-height:90px}
+.tk-send-btn{width:42px;height:42px;border-radius:11px;background:#e5e5e5;border:none;color:#111;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.tk-send-btn svg{width:18px;height:18px;fill:#111}
+.tk-foot-meta{display:flex;justify-content:space-between;align-items:center;padding:8px 18px;border-top:1px solid rgba(255,255,255,.05)}
+.tk-id-chip{font-size:10.5px;color:var(--dim);font-family:monospace}
+.tk-new-btn{font-size:10.5px;color:#e5e5e5;background:none;border:none;cursor:pointer;font-weight:600}
+.tk-closed-banner{text-align:center;font-size:11.5px;color:#f59e0b;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:8px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg-grid"></div><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div class="particles" id="particles"></div>
+
+<div class="wrapper">
+  <header>
+    <div class="logo-outer">
+      <div class="logo-inner">
+        <svg class="logo-svg" viewBox="0 0 44 44">
+          <rect x="8" y="8" width="12" height="12" rx="2"/><rect x="24" y="8" width="12" height="12" rx="2"/>
+          <rect x="8" y="24" width="12" height="12" rx="2"/><rect x="24" y="24" width="12" height="12" rx="2"/>
+        </svg>
+      </div>
+    </div>
+    <h1>Roblox Request Id Cor</h1>
+    <p class="subtitle">Clarity Over Resonance</p>
+    <div class="wanz-chip"><span class="wanz-dot"></span>by wanz</div>
+  </header>
+
+  <div class="card">
+    <h2>Masuk ke Panel Request</h2>
+    <p>Masukkan username kamu untuk melacak status request (ACC/Ditolak). Tidak perlu password.</p>
+    <div class="field">
+      <div class="field-label">Username</div>
+      <div class="input-wrap">
+        <svg class="iico" viewBox="0 0 18 18"><circle cx="9" cy="6" r="3"/><path d="M3 15c0-3.314 2.686-6 6-6s6 2.686 6 6"/></svg>
+        <input type="text" id="usernameInput" placeholder="Username kamu..." maxlength="40" autocomplete="off"/>
+      </div>
+      <div class="error-msg" id="errMsg">Username tidak boleh kosong.</div>
+    </div>
+    <div class="field" id="turnstileWrap" style="display:flex;justify-content:center;">
+      <div class="cf-turnstile" id="turnstileWidget"></div>
+    </div>
+    <div class="error-msg" id="captchaErrMsg">Selesaikan verifikasi CAPTCHA dulu ya.</div>
+    <button type="button" class="btn-submit" id="loginBtn">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3l4 4-4 4"/><path d="M13 7H3"/></svg>
+      Masuk
+    </button>
+    <div class="admin-hint">Developer / Admin? <a href="/logs.html">Masuk ke Logs</a></div>
+  </div>
+
+  <footer>Dibuat oleh &nbsp;<span>wanz</span>&nbsp; — © 2026</footer>
+</div>
+
+<!-- ── TICKET WIDGET — Chat CS/Admin (selalu aktif, walau maintenance/offline) ── -->
+<button class="tk-fab" id="tkFab" title="Chat CS / Admin" onclick="tkOpen()">
+  <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H9l-5 4V6a2 2 0 012-2z"/></svg>
+  <span class="tk-badge" id="tkBadge">0</span>
+</button>
+
+<div class="tk-overlay" id="tkOverlay">
+  <div class="tk-box">
+    <div class="tk-head">
+      <div class="tk-ico">🎫</div>
+      <div><h3>Chat CS / Admin</h3><p>Selalu bisa dihubungi, kapan saja</p></div>
+      <button class="tk-close" onclick="tkClose()">✕</button>
+    </div>
+    <div class="tk-body" id="tkBody"></div>
+    <div class="tk-foot" id="tkFoot" style="display:none">
+      <textarea class="tk-textarea" id="tkMsgInput" rows="1" placeholder="Tulis pesan..." maxlength="500"></textarea>
+      <button class="tk-send-btn" id="tkSendBtn" onclick="tkSendMessage()"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
+    </div>
+    <div class="tk-foot-meta" id="tkFootMeta" style="display:none">
+      <span class="tk-id-chip" id="tkIdChip">#---</span>
+      <button class="tk-new-btn" onclick="tkNewTicket()">🔄 Mulai tiket baru</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(()=>{const c=document.getElementById('particles');for(let i=0;i<16;i++){const p=document.createElement('div');p.className='pt';p.style.cssText=`left:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:-${Math.random()*15}s`;c.appendChild(p)}})();
+
+const LOGIN_KEY='wanz_username';
+const ADMIN_KEY_STORAGE='wanz_adminkey';
+
+// If already logged in, redirect to dashboard
+if(localStorage.getItem(LOGIN_KEY)){
+  window.location.replace('/index.html');
+}
+
+const input=document.getElementById('usernameInput');
+const btn=document.getElementById('loginBtn');
+const errMsg=document.getElementById('errMsg');
+const captchaErrMsg=document.getElementById('captchaErrMsg');
+
+setTimeout(()=>input.focus(),300);
+
+// ── Cloudflare Turnstile (CAPTCHA) ──────────────────────────────────────────
+// Site key diambil dari server (bukan hardcode di HTML) biar gampang diganti
+// dari config.js doang. Widget-nya di-render manual (bukan pakai atribut
+// data-sitekey statis) karena site key-nya baru ketauan setelah fetch selesai.
+let turnstileWidgetId = null;
+let turnstileReady = false;
+let captchaEnabled = false;
+
+function renderTurnstileWidget(){
+  fetch('/api/turnstile-sitekey')
+    .then(r => r.json())
+    .then(d => {
+      captchaEnabled = !!d.enabled;
+      if (!captchaEnabled) {
+        // CAPTCHA lagi dimatikan dari config.js -- sembunyiin widget-nya total,
+        // login jalan normal kayak sebelum ada fitur ini.
+        document.getElementById('turnstileWrap').style.display = 'none';
+        return;
+      }
+      if (typeof turnstile === 'undefined') { setTimeout(renderTurnstileWidget, 200); return; }
+      if (!d.siteKey) return;
+      turnstileWidgetId = turnstile.render('#turnstileWidget', {
+        sitekey: d.siteKey,
+        theme: 'dark',
+        callback: () => { captchaErrMsg.classList.remove('show'); },
+      });
+      turnstileReady = true;
+    })
+    .catch(() => { /* Kalau gagal ambil status, anggap captcha off -- jangan sampai orang gabisa login */ });
+}
+renderTurnstileWidget();
+
+async function doLogin(){
+  const v=input.value.trim().replace(/\s+/g,'_');
+  if(!v){
+    input.classList.add('error-field');
+    errMsg.classList.add('show');
+    return;
+  }
+  input.classList.remove('error-field');
+  errMsg.classList.remove('show');
+
+  // CAPTCHA lagi dimatikan -> langsung lanjut kayak login biasa, gak perlu
+  // verifikasi apa-apa.
+  if (!captchaEnabled) {
+    localStorage.setItem(LOGIN_KEY, v);
+    window.location.replace('/index.html');
+    return;
+  }
+
+  // Wajib selesaikan CAPTCHA dulu sebelum lanjut
+  const token = turnstileReady && turnstileWidgetId !== null ? turnstile.getResponse(turnstileWidgetId) : '';
+  if (!token) {
+    captchaErrMsg.textContent = 'Selesaikan verifikasi CAPTCHA dulu ya.';
+    captchaErrMsg.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  const originalBtnHtml = btn.innerHTML;
+  btn.innerHTML = 'Memverifikasi...';
+
+  try {
+    const res = await fetch('/api/verify-turnstile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token })
+    });
+    const d = await res.json();
+    if (!d.success) {
+      captchaErrMsg.textContent = d.message || 'Verifikasi CAPTCHA gagal, coba lagi.';
+      captchaErrMsg.classList.add('show');
+      if (turnstileWidgetId !== null) turnstile.reset(turnstileWidgetId); // token sekali pakai -- reset biar minta ulang
+      return;
+    }
+    localStorage.setItem(LOGIN_KEY, v);
+    window.location.replace('/index.html');
+  } catch (e) {
+    captchaErrMsg.textContent = 'Gagal menghubungi server, cek koneksi lalu coba lagi.';
+    captchaErrMsg.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalBtnHtml;
+  }
+}
+
+btn.addEventListener('click', doLogin);
+input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); doLogin(); } });
+input.addEventListener('input', ()=>{ input.classList.remove('error-field'); errMsg.classList.remove('show'); });
+
+// ── TICKET WIDGET — Chat CS/Admin (lihat public/index.html untuk versi identik) ──
+(function(){
+  const TK_ID_KEY   = 'rbx_ticket_id';
+  const TK_SEEN_KEY = 'rbx_ticket_seen';
+  let tkPollTimer = null;
+
+  const tkBody     = document.getElementById('tkBody');
+  const tkFoot     = document.getElementById('tkFoot');
+  const tkFootMeta = document.getElementById('tkFootMeta');
+  const tkOverlay  = document.getElementById('tkOverlay');
+  const tkBadge    = document.getElementById('tkBadge');
+
+  function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function getStoredId(){ return localStorage.getItem(TK_ID_KEY) || ''; }
+  function getSeen(){ return parseInt(localStorage.getItem(TK_SEEN_KEY) || '0', 10); }
+  function setSeen(n){ localStorage.setItem(TK_SEEN_KEY, String(n)); }
+  function getSavedName(){ return localStorage.getItem(LOGIN_KEY) || ''; }
+  function toast(msg){ alert(msg); }
+
+  window.tkOpen = function(){
+    tkOverlay.classList.add('show');
+    const id = getStoredId();
+    if (id) tkRenderChat(id, true); else tkRenderForm();
+  };
+  window.tkClose = function(){
+    tkOverlay.classList.remove('show');
+    if (tkPollTimer) { clearInterval(tkPollTimer); tkPollTimer = null; }
+  };
+
+  function tkRenderForm(){
+    tkFoot.style.display = 'none';
+    tkFootMeta.style.display = 'none';
+    const savedName = getSavedName();
+    tkBody.innerHTML = `
+      <div class="tk-form">
+        <div class="field">
+          <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Nama kamu</div>
+          <input type="text" class="tk-input" id="tkName" maxlength="40" placeholder="Nama..." value="${esc(savedName)}"/>
+        </div>
+        <div class="field">
+          <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Pesan / Pertanyaan</div>
+          <textarea class="tk-textarea" id="tkFirstMsg" rows="4" maxlength="500" placeholder="Tulis pertanyaan atau kendala kamu di sini..."></textarea>
+        </div>
+        <button class="tk-submit" id="tkCreateBtn" onclick="tkCreateTicket()">🎫 Buat Tiket & Kirim</button>
+        <p class="tk-status-note">Tiket kamu akan langsung diteruskan ke admin via Telegram.<br>Fitur ini tetap aktif walau aplikasi sedang maintenance/offline.</p>
+      </div>`;
+  }
+
+  window.tkCreateTicket = async function(){
+    const name = document.getElementById('tkName').value.trim();
+    const message = document.getElementById('tkFirstMsg').value.trim();
+    if (!name)    return toast('Nama wajib diisi.');
+    if (!message) return toast('Tulis pesan dulu ya.');
+    const btn = document.getElementById('tkCreateBtn');
+    btn.disabled = true; btn.textContent = 'Mengirim...';
+    try {
+      const r = await fetch('/api/ticket', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, username: getSavedName(), message })
+      });
+      const d = await r.json();
+      if (r.ok && d.success) {
+        localStorage.setItem(TK_ID_KEY, d.id);
+        setSeen(1);
+        tkRenderChat(d.id, true);
+      } else {
+        toast(d.message || 'Gagal membuat tiket.');
+        btn.disabled = false; btn.textContent = '🎫 Buat Tiket & Kirim';
+      }
+    } catch {
+      toast('Koneksi gagal. Coba lagi.');
+      btn.disabled = false; btn.textContent = '🎫 Buat Tiket & Kirim';
+    }
+  };
+
+  function tkRenderMessages(ticket){
+    if (!ticket.messages || !ticket.messages.length) {
+      tkBody.innerHTML = '<div class="tk-empty">Belum ada pesan.</div>';
+      return;
+    }
+    const closedBanner = ticket.status === 'closed'
+      ? '<div class="tk-closed-banner">🔒 Tiket ini sudah ditutup oleh admin. Klik "Mulai tiket baru" jika masih butuh bantuan.</div>' : '';
+    const rows = ticket.messages.map(m => `
+      <div class="tk-msg ${m.from === 'admin' ? 'admin' : 'user'}">
+        ${esc(m.text)}
+        <span class="tk-time">${m.from === 'admin' ? '👨‍💻 Admin' : '🧑 Kamu'} • ${esc(m.time || '')}</span>
+      </div>`).join('');
+    tkBody.innerHTML = closedBanner + '<div class="tk-msgs">' + rows + '</div>';
+    tkBody.scrollTop = tkBody.scrollHeight;
+  }
+
+  function tkRenderChat(id, scrollDown){
+    tkFootMeta.style.display = 'flex';
+    document.getElementById('tkIdChip').textContent = '#' + id;
+    tkBody.innerHTML = '<div class="tk-empty">Memuat chat...</div>';
+    tkFetchAndRender(id, scrollDown);
+    if (tkPollTimer) clearInterval(tkPollTimer);
+    tkPollTimer = setInterval(() => tkFetchAndRender(id, false), 6000);
+  }
+
+  async function tkFetchAndRender(id, scrollDown){
+    try {
+      const r = await fetch('/api/ticket/' + encodeURIComponent(id));
+      const d = await r.json();
+      if (!r.ok || !d.success) {
+        tkBody.innerHTML = '<div class="tk-empty">Tiket tidak ditemukan. Mungkin sudah lama / dihapus.</div>';
+        tkFoot.style.display = 'none';
+        return;
+      }
+      tkRenderMessages(d.ticket);
+      tkFoot.style.display = d.ticket.status === 'closed' ? 'none' : 'flex';
+      if (scrollDown) tkBody.scrollTop = tkBody.scrollHeight;
+      setSeen(d.ticket.messages.length);
+      tkUpdateBadge();
+    } catch {}
+  }
+
+  window.tkSendMessage = async function(){
+    const id = getStoredId();
+    if (!id) return;
+    const input = document.getElementById('tkMsgInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    input.disabled = true;
+    try {
+      const r = await fetch('/api/ticket/' + encodeURIComponent(id) + '/message', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      });
+      const d = await r.json();
+      if (r.ok && d.success) {
+        tkRenderMessages(d.ticket);
+        setSeen(d.ticket.messages.length);
+      } else {
+        toast(d.message || 'Gagal mengirim pesan.');
+        input.value = text;
+      }
+    } catch {
+      toast('Koneksi gagal.');
+      input.value = text;
+    } finally {
+      input.disabled = false;
+      input.focus();
+    }
+  };
+
+  window.tkNewTicket = function(){
+    if (!confirm('Mulai tiket baru? Riwayat tiket ini tidak akan hilang, tapi kamu akan membuat percakapan baru.')) return;
+    localStorage.removeItem(TK_ID_KEY);
+    setSeen(0);
+    tkUpdateBadge();
+    tkRenderForm();
+  };
+
+  async function tkUpdateBadge(){
+    const id = getStoredId();
+    if (!id) { tkBadge.classList.remove('show'); return; }
+    try {
+      const r = await fetch('/api/ticket/' + encodeURIComponent(id));
+      const d = await r.json();
+      if (r.ok && d.success) {
+        const unread = Math.max(0, d.ticket.messages.length - getSeen());
+        if (unread > 0 && !tkOverlay.classList.contains('show')) {
+          tkBadge.textContent = unread > 9 ? '9+' : String(unread);
+          tkBadge.classList.add('show');
+        } else {
+          tkBadge.classList.remove('show');
+        }
+      }
+    } catch {}
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target && e.target.id === 'tkMsgInput' && e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      window.tkSendMessage();
+    }
+  });
+
+  tkUpdateBadge();
+  setInterval(tkUpdateBadge, 25000);
+})();
+</script>
+</body>
+</html>
