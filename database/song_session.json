@@ -1,0 +1,24 @@
+{
+  "active": false,
+  "slot": 3,
+  "label": "Sesi sore",
+  "source": "schedule",
+  "openedAt": "Rabu, 23 September 2026 pukul 15.00",
+  "closedAt": null,
+  "song": {
+    "quota": 25,
+    "count": 8,
+    "active": false,
+    "closedAt": "Rabu, 23 September 2026 pukul 15.11",
+    "closedBy": "manual",
+    "openedAtTs": 1790150405345
+  },
+  "banner": {
+    "quota": 5,
+    "count": 0,
+    "active": false,
+    "closedAt": "Rabu, 23 September 2026 pukul 15.11",
+    "closedBy": "manual",
+    "openedAtTs": 1790150406024
+  }
+}
