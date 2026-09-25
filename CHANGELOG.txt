@@ -1,0 +1,825 @@
+╔══════════════════════════════════════════════════════════════════╗
+║           Roblox Song Request — Update Log                       ║
+║           Developer : wanz | copyright.by-wanzz.my.id           ║
+╚══════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  v21 — September 2026
+
+[FIX: OWN MENU MACET DI HALAMAN 5/7 -- HTML RUSAK]
+  * lib/menu.js: teks halaman "Role & APK" nulis placeholder /aktifkanorder
+    <trxId> pakai kurung siku HTML mentah. Karena pesan dikirim dengan
+    parse_mode HTML, Telegram baca <trxId> sebagai tag beneran -- gak
+    dikenal -> SELURUH edit pesan ditolak Telegram (400, gak bisa
+    di-retry) -> tombol Lanjut kelihatan gak ngapa-ngapain padahal
+    sebenarnya error yang gak pernah dicek/dilaporkan. Diperbaiki jadi
+    &lt;trxId&gt;. Halaman 6 & 7 sekarang bisa diakses normal.
+  * bot/messages.js (COMMAND_USAGE): bug yang SAMA ternyata ada di hampir
+    semua contoh format command ("format command salah" -> <id>, <user>,
+    dst mentah). Semua placeholder dibetulin jadi &lt;...&gt;.
+  * lib/robloxAudio.js & lib/whatsapp.js: 2 pesan lain dengan masalah
+    yang sama, ikut dibetulin.
+
+[BAN IKUT NGE-BAN IP -- GANTI AKUN GAK ABIS-ABIS DITOLAK]
+  * lib/store.js: penyimpanan baru database/ip_banlist.json (IP yang
+    diblokir) & database/user_ips.json (riwayat "username ini pernah
+    request dari IP mana aja", kecatet otomatis tiap ada request/ping).
+  * bot/messages.js: /ban sekarang otomatis ikut ban semua IP yang
+    pernah kepakai username itu. /unban kebalikannya -- IP ikut dibuka
+    lagi. /globalban ikut aturan yang sama. /banlist nampilin jumlah IP
+    yang ikut diblokir per user. Tidak ada command baru -- tetap cuma
+    /ban & /unban seperti biasa.
+  * routes/api.js & routes/api-mobile.js: /api/request, /api/banner,
+    /api/video (web) dan /api/mobile/request, /api/mobile/banner (APK)
+    sekarang nolak (403) kalau IP pengirim lagi diblokir, walau username-
+    nya baru/beda. /api/my-role & /api/mobile/ping ikut nyatet IP tiap
+    dipanggil (biar riwayat IP makin lengkap) tapi TIDAK nge-block di
+    situ -- blokir cuma pas beneran kirim request.
+  * CATATAN: kalau server ada di belakang reverse proxy/CDN (mis.
+    Cloudflare), req.ip perlu app.set('trust proxy', ...) yang di-set
+    ke hop yang benar biar IP yang kecatet itu IP asli user, bukan IP
+    proxy-nya -- belum diaktifkan di server.js, tunggu konfirmasi setup
+    jaringan.
+
+
+
+[ID PRIVAT VIP/VVIP: WHATSAPP DIHAPUS, CUMA LEWAT "ID SAYA"]
+  * bot/robloxAudio.js & bot/robloxAudioRequest.js: request VIP/VVIP yang
+    di-ACC sekarang HANYA disimpan ke halaman "ID Saya". Gak ada lagi
+    DM WA pribadi (teks/gambar/video) -- dulu dikirim ke nomor yang
+    didaftarin lewat /setwa. User biasa (bukan vip/vvip) tetap ke saluran
+    WA publik seperti biasa, TIDAK ADA PERUBAHAN.
+  * public/vvip.html & routes/vvip.js & lib/vvipShop.js: field "Nomor
+    WhatsApp" pas beli dihapus (form, validasi, penyimpanan order, notif
+    Telegram). Modal benefit "ID Privat via WhatsApp" juga dihapus.
+    waNumber dari klien lama yang masih ke-kirim diabaikan aja.
+  * bot/messages.js: /setwa sekarang cuma balas "sudah tidak dipakai".
+    Parameter ke-4 (nomor_wa) di /setrole diterima tapi diabaikan.
+    Teks bantuan /setrole & lib/menu.js dibersihkan dari /setwa.
+  * public/index.html: teks di tab "ID Saya" gak lagi bilang ID bisa
+    dikirim ke WA pribadi.
+  * /boardcastwa TETAP ada (broadcast pengumuman, bukan pengiriman ID) --
+    cuma ngirim ke nomor lama yang masih tersimpan; nomor baru gak bisa
+    didaftarin lagi.
+
+[VIDEO TRON: BATAS DURASI, BUKAN UKURAN (SAMPAI 60 MB)]
+  * Penyebab video ~40 MB "kegedean": file dikirim ke Telegram lalu DIAMBIL
+    BALIK buat diproses, padahal Bot API Telegram cuma ngizinin bot
+    download file sampai 20 MB ("file is too big"). Sekarang file video
+    disimpan di server (log.videoPath) & dipakai langsung -- gak lewat
+    download Telegram lagi (bot/robloxAudioRequest.js).
+  * routes/api.js /api/video: durasi dicek DI AWAL (maks 30 detik, sebelum
+    limit harian kepakai). Ukuran cuma dibatasi 60 MB (multer). Video di
+    atas ~45 MB gak dilampirin ke Telegram (batas kirim bot ~50 MB) --
+    kartu ke admin berupa teks, tombol Upload tetap jalan pakai file di
+    server. Kartu sekarang nampilin ukuran & durasi video.
+  * lib/robloxVideo.js: FPS gak lagi diturunin berdasar MB (dulu >8/15/30 MB
+    -> FPS makin kecil). Semua video lolos dapet FPS yang sama (VIDEO_MAX_FPS).
+  * lib/uploads.js + server.js: sweeper tiap 1 jam ngehapus file di uploads/
+    yang umurnya > 72 jam (video yang ditolak/gak pernah diproses).
+  * public/index.html: hint upload video jadi "maks. 60 MB & 30 detik".
+
+[UPLOAD ROBLOX TAHAN RESTART SERVER]
+  + lib/uploadJobs.js (baru) -- tiap tombol "Upload ke Roblox" (audio,
+    banner, video) dicatat sebagai job di roblox_upload_jobs.json SEBELUM
+    proses mulai & di-update tiap ada kemajuan. Kalau server restart di
+    tengah jalan (antre / download file / upload ke Roblox / upload klip
+    video), job dilanjutkan OTOMATIS pas server nyala lagi
+    (resumeUploadJobs di bot/robloxAudioRequest.js, dipanggil dari server.js).
+    Sebelumnya proses itu putus, kartu nyangkut di "sedang upload" dan
+    limit user kepakai sia-sia.
+  * Lanjut dari titik terakhir, bukan mulai ulang:
+      - asset sudah dibuat di Roblox  -> TIDAK diupload ulang (gak ada asset
+        kembar), langsung nunggu hasil moderasi
+      - video sebagian klip terupload -> klip yang sudah ada dilewati &
+        urutan klip tetap benar (lib/robloxVideo.js: opts.resume/onCheckpoint)
+  * Job yang kepotong restart lebih dari 3x dianggap gagal (limit dikembalikan,
+    kartu diupdate) supaya gak loop tanpa akhir.
+  * Tombol Upload ditolak kalau request itu sudah punya job berjalan (cegah
+    admin lain menekan dobel & bikin asset kembar).
+  * FIX resumeRequestPendingChecks: pending moderasi dulu DIBUANG diam-diam
+    kalau file sementara hilang setelah restart (kartu nyangkut selamanya).
+    Sekarang tetap dipantau; banner yang filenya hilang dibagikan sebagai
+    teks ID.
+  - Belum mencakup: upload lewat perintah /upload / kirim audio langsung ke
+    bot (alur bot/robloxAudio.js) -- itu jalur terpisah.
+
+[DATA "ID SAYA" AMAN DARI GANTI FILE/UPDATE + IKUT /backupdb]
+  * Data ID Saya (ID privat VIP/VVIP) pindah dari database/user/privateIds.json
+    ke FOLDER SENDIRI: database/idsaya/privateIds.json -- terpisah dari
+    database/user/ (titel.json) yang sering ditimpa/di-restore dari backup
+    lama. lib/privateInbox.js.
+  * Migrasi OTOMATIS pas server nyala: file di lokasi lama dipindah ke folder
+    baru (kalau dua-duanya ada, digabung tanpa duplikat; kalau file baru
+    korup, file lama gak disentuh). File lama di-rename jadi
+    privateIds.json.migrated, bukan dihapus.
+  * /backupdb ikut mencakup folder ini (lihat bagian AUTO-BACKUP di bawah).
+  ! Pas ganti file/update: JANGAN hapus folder database/ di server (atau
+    ekstrak backup terbaru setelah update).
+
+[AUTO-BACKUP = /backupdb, MENCAKUP SELURUH DATABASE]
+  * Auto-backup terjadwal (lib/backup.js, tiap BACKUP_INTERVAL_MS) sekarang
+    menghasilkan ZIP yang sama persis dengan /backupdb, bukan lagi snapshot
+    JSON backup_*.json. /backup (manual) juga sama. Dikirim ke chat Owner +
+    1 salinan lokal di database/user/backups/ (maks BACKUP_MAX_FILES=48,
+    yang terlama dihapus otomatis).
+  * Isi zip (lib/dbBackup.js):
+      - SELURUH folder database/ tanpa terkecuali: user, idsaya, vvip
+        (orders.json -- dulu TIDAK ikut ke-backup), dan folder apa pun yang
+        ditambah nanti. Satu-satunya yang dilewati: folder salinan backup
+        itu sendiri (biar gak zip di dalam zip).
+      - semua file data *.json di folder utama (logs.json, tickets.json,
+        admins.json, banlist.json, rate_limits.json,
+        roblox_audio_history.json, dst) -- ini pengganti snapshot lama,
+        jadi tidak ada data yang kelewat.
+      - Sengaja TIDAK ikut: config.js (rahasia), wa_auth/ (sesi WhatsApp),
+        mobile_tokens.json (token login app), roblox_upload_jobs.json
+        (antrean sementara -- direstore bisa upload dobel), package*.json.
+  * Restore: ekstrak zip ke folder utama project (struktur folder tetap).
+  * /listbackup & /getbackup sekarang juga membaca zip baru; snapshot JSON
+    lama di backups/ (kalau masih ada) tetap bisa diambil.
+
+[MAINTENANCE BERLAKU JUGA UNTUK VIP/VVIP (KECUALI "ID SAYA")]
+  * Mode maintenance sekarang berdampak ke SEMUA user termasuk VIP/VVIP. Yang
+    tetap bebas: admin/owner/dev. VIP/VVIP tetap bisa membuka halaman
+    "ID Saya" (halaman + API-nya memang tidak di-gate maintenance).
+    Mode OFFLINE tidak diubah (VIP/VVIP tetap bebas seperti sebelumnya).
+  * lib/roles.js: canBypassAppMode(username, mode) sadar-mode -- untuk
+    'maintenance' hanya admin/owner/dev yang bebas.
+  * routes/api.js: cek maintenance juga DI SERVER untuk /api/request,
+    /api/banner, /api/video (dulu cuma overlay di frontend, jadi bisa
+    ditembus lewat API langsung). File upload yang ditolak langsung dihapus.
+    /api/my-role sekarang mengembalikan idSayaAccess.
+  * routes/api-mobile.js: lagu & banner ikut diblok saat maintenance untuk
+    VIP/VVIP; /api/mobile/ping mengembalikan appMode 'maintenance' untuk
+    mereka + flag idSayaAccess (true untuk VIP/VVIP) supaya app bisa tetap
+    menampilkan menu ID Saya saat maintenance.
+  * public/index.html: overlay maintenance punya tombol "Buka ID Saya"
+    (hanya tampil untuk VIP/VVIP) -> /idsaya.html.
+  * public/vvip.html: benefit "Bebas Mode Maintenance" diganti "ID Saya Tetap
+    Bisa Dibuka Saat Maintenance".
+
+[KARTU AUTO-UPLOAD KE GRUP SAJA + ATURAN PENGEMBALIAN KUOTA SESI]
+  * Kartu request tidak lagi "dobel" di chat pribadi: dulu kartu dikirim ke chat pribadi Owner
+    (TELEGRAM_CHAT_ID) LALU disalin ke semua admin -- Owner sendiri ikut terdaftar sebagai admin,
+    jadi menerima kartu 2x -- plus salinan di grup.
+  * lib/telegram.js: kartu request dikirim dengan opts { card: true }.
+      - /autoupload ON + mode chat "group": kartu dikirim LANGSUNG ke GRUP saja; tidak ada kartu
+        di chat pribadi dan tidak ada salinan ke chat pribadi admin. Auto-upload & auto-share
+        bekerja pada kartu di grup itu (dihapus setelah share sukses).
+      - Kalau kirim ke grup gagal (mis. bot dikeluarkan dari grup): otomatis jatuh ke chat Owner.
+      - Mode private / auto-upload OFF: perilaku lama, tapi salinan TIDAK lagi dikirim ke chat
+        yang sudah memegang kartu aslinya (perbaikan dobel untuk Owner).
+      - Pengiriman lain (backup DB, notifikasi) tetap ke chat Owner.
+    /autostatus menampilkan tujuan kartu ("GRUP saja" atau "chat Owner + salinan admin").
+  * Pengembalian limit dibedakan:
+      - DITOLAK (admin lewat /rej, atau ditolak moderasi Roblox): HANYA limit PRIBADI user yang
+        dikembalikan. Kuota sesi GLOBAL (hitungan sesi lagu/banner) tetap terpakai
+        (bot/apply-status.js, finalizeRequestRejected).
+      - GAGAL (error teknis saat upload ke Roblox, stage "gagal"): limit pribadi user DAN kuota
+        sesi global dikembalikan (handleUploadJobFailure), karena request-nya tidak pernah
+        benar-benar diproses. Sesi yang sempat auto-tutup karena kuota penuh dibuka lagi
+        otomatis. Video punya limit sendiri & tidak punya kuota sesi global.
+
+[MODE OTOMATIS: /autoupload, /autoshare, /autoall (ON/OFF LEWAT TELEGRAM)]
+  + lib/autoMode.js (baru): status disimpan di database/auto_mode.json (ikut backup). Default
+    dua-duanya OFF = manual seperti biasa.
+  * /autoupload on|off : request BARU (web & APK: lagu, banner, video) langsung di-upload ke
+    Roblox begitu kartunya terkirim ke Telegram -- tanpa admin menekan "Upload ke Roblox".
+    Request yang sudah menunggu sebelum dinyalakan tetap diproses manual.
+  * /autoshare on|off : begitu upload sukses & lolos moderasi, hasil LANGSUNG dibagikan tanpa
+    menekan Done/Share -- VIP/VVIP -> halaman "ID Saya" (tidak ke WhatsApp), user biasa ->
+    saluran WA. Berlaku juga untuk upload yang sedang berjalan (dicek saat selesai) dan untuk
+    upload yang dimulai manual. Kartu request (termasuk salinan di admin lain) dihapus setelah
+    sukses. Kalau share otomatis gagal (mis. WA putus): kartu TETAP ada dengan catatan +
+    tombol Done/Share untuk mencoba manual.
+  * /autoall on|off = dua-duanya. /autostatus (atau perintah tanpa on/off) = lihat status.
+  * Izin (auto-grant permission) SELALU otomatis -- bukan bagian dari mode ini.
+  * Perubahan pendukung (bot/robloxAudioRequest.js): tahap share dipisah jadi
+    performRequestShare (dipakai tombol & auto-share) dengan penjaga anti-dobel ("Sudah
+    dibagikan sebelumnya"); file gambar/video hanya dihapus kalau pengiriman berhasil (dulu
+    dihapus walau gagal sehingga tombol coba-lagi tidak bisa jalan); saat upload dimulai,
+    tombol di salinan kartu milik admin lain dilepas.
+
+[SEMUA DATA DI DALAM FOLDER database/ -- TIDAK ADA LAGI FILE DATA DI LUAR]
+  + lib/dataPaths.js (baru): dataFile('nama') = jalur file data di database/. Semua modul
+    (store, ratelimit, songSchedule, scheduler, robloxAudio, uploadJobs, mobile-tokens,
+    api/router) sekarang membaca/menulis di sana.
+  * File yang dulu di folder utama sekarang di database/: app_status, logs, tickets, banlist,
+    announce, chat_mode, req_status, admins, claims, pins, audit, group_override,
+    queue_config, song_schedule, song_session, schedule, roblox_audio_history,
+    roblox_audio_pending, roblox_perm_variant, roblox_upload_jobs, rate_limits, limit_bonus,
+    duration_violations, limits_config, mobile_tokens.
+  * PENTING -- akun user web/APK (api/database.json) & sesi login (api/keyList.json) dulu ada
+    di folder api/ dan TIDAK PERNAH ikut backup. Sekarang di database/api/ dan ikut backup.
+  * Migrasi OTOMATIS pas server nyala: file di lokasi lama dipindah ke database/ kalau
+    tujuannya belum ada; kalau sudah ada (mis. dari backup), yang di database/ dipakai dan
+    file lama dibiarkan (tidak ditimpa/dihapus).
+  * Backup (/backupdb, /backup, auto-backup) = folder database/ persis (tanpa file di luar
+    itu). Restore = ganti folder database/ dengan isi zip (atau ekstrak zip ke folder utama).
+    Dikecualikan: salinan backup lokal & roblox_upload_jobs.json; bisa diatur lewat
+    BACKUP_EXCLUDE_FILES di backup-config.js (mis. mobile_tokens.json, api/keyList.json).
+  * Yang TETAP di luar database/ karena bukan data: wa_auth/ (sesi WhatsApp), tmp/ &
+    uploads/ (file sementara), config.js/apis.js (pengaturan), package.json.
+
+[FIX: /menu MACET DI SATU HALAMAN (mis. "5/7", tombol Lanjut ada tapi gak ngefek)]
+  Penyebab (dibuktikan lewat simulasi 429 dari Telegram): lib/telegram.js -> editMessageText()
+  TIDAK PERNAH membaca balasan Telegram sama sekali (beda dari editMessageCaption yang sudah
+  benar) -- kalau Telegram menolak permintaan edit (paling sering: rate limit 429, muncul kalau
+  admin nge-tap "Lanjut ▶"/"◀ Kembali" beberapa kali cepat-cepat buat pindah antar halaman menu,
+  atau gangguan sesaat), fetch()-nya tetap dianggap "berhasil" (fetch cuma error kalau jaringan
+  putus, bukan karena Telegram membalas {ok:false}). Kartu/pesannya JADI TIDAK BERUBAH, tapi bot
+  tidak sadar dan tidak mencoba lagi -- makanya kelihatan "cuma bisa klik sampai halaman 5"
+  walau indikatornya sendiri sudah benar menampilkan total 7 halaman dan tombol Lanjut masih ada.
+  * Diperbaiki: sekarang membaca balasan Telegram; kalau gagal karena 429/5xx (rate limit atau
+    Telegram lagi gangguan), dicoba lagi otomatis (mengikuti retry_after dari Telegram, maks 3x)
+    -- pola yang sama dipakai di endpoint lain di proyek ini. "message is not modified" tidak
+    dianggap error (memang wajar terjadi). Ini juga sekaligus memperbaiki keandalan SEMUA
+    pesan/kartu bot yang di-update lewat editMessageText (status upload, dsb), bukan cuma /menu.
+
+[FIX TAMPILAN 360px / DPI NORMAL: TAB & "ID SAYA" TERPOTONG]
+  Diuji dengan Chromium headless (viewport 320/360/390/412px, mode mobile emulation) terhadap
+  public/index.html -- akar masalahnya BUKAN cuma di tab, tapi bug lebar yang membuat SELURUH
+  halaman ikut membesar di HP:
+    * public/index.html: `.lyrics-box{width:90vh}` -- typo satuan (harusnya vw). Di layar
+      TINGGI (HP pada umumnya), 90vh bisa >700px -- jauh melebihi lebar layar manapun. Karena
+      elemen ini ada di dalam overlay yang SELALU `display:flex` (buka/tutup lewat opacity,
+      bukan display:none) dan overlay itu sendiri tidak meng-clip overflow, lebar 700px+ ini
+      permanen ikut dihitung ke lebar halaman. `body{overflow-x:hidden}` TIDAK melindungi ini
+      karena elemen `position:fixed` lepas dari alur body. Browser mobile lalu memperbesar
+      viewport supaya konten muat, dan SELURUH halaman (termasuk tab bar) ikut mengecil/
+      tergeser -- inilah kemungkinan besar penyebab screenshot yang dilaporkan.
+      -> Diperbaiki jadi `92vw`; jaring pengaman `overflow:hidden` ditambahkan ke semua overlay
+      fixed (.lyrics-modal, .tk-overlay, .success-popup, .rules-overlay, .status-overlay,
+      .track-overlay) supaya bug lebar serupa di masa depan tidak lagi bocor ke seluruh halaman.
+    * Tab (.tabs/.tab-btn): dulu tiap tab selebar TEKS-nya (ikon+label sejajar) -- 5 tab (VIP/
+      VVIP dapat tab "ID Saya") totalnya >500px, jadi terpotong/nyempil di layar 360px persis
+      seperti di screenshot. Diubah jadi ikon di ATAS, label di BAWAH, dan tiap tab berbagi
+      lebar rata (flex:1;min-width:0) -- 4 ATAU 5 tab selalu muat penuh di layar berapa pun.
+    * Badge notifikasi "ID Saya" dipindah jadi lencana kecil di pojok tab (bukan menambah lebar
+      teks tab).
+    * Judul/nama file TANPA SPASI (mis. nama file video/lagu yang panjang) bisa mendorong badge
+      status keluar layar -- flex parent (.mine-top, dan .mine-item-top yang sebelumnya belum
+      punya CSS sama sekali) tidak diberi `min-width:0` sehingga menolak menyusut di bawah
+      lebar kata itu. Diperbaiki di kedua tempat (tab "Request Saya" & "ID Saya") + judul boleh
+      membungkus (overflow-wrap:anywhere).
+    * Kotak pencarian YouTube (input + tombol "Cari"): input tidak diberi min-width:0 sehingga
+      sedikit meluber di layar sempit (320px) -- diperbaiki.
+  Hasil: 0 elemen overflow di 320/360/390/412px, di semua tab (Song/Banner/Video/Request Saya/
+  ID Saya) termasuk widget tiket & modal lirik terbuka. Halaman lain (idsaya.html, login.html,
+  vvip.html, logs.html) sudah bersih dari awal, tidak ada perubahan di sana.
+
+[PEMBELIAN VIP/VVIP: "SUDAH BAYAR TAPI TIDAK MASUK" + USERNAME WAJIB]
+  Penyebab (dari kode + data order asli di backup):
+    1. public/vvip.html membatalkan order OTOMATIS saat halaman disembunyikan (pagehide -> sendBeacon)
+       -- persis saat pembeli pindah ke aplikasi bank/e-wallet buat bayar. Order jadi "cancelled"
+       padahal QR masih hidup; rekonsiliasi hanya memeriksa order "pending" jadi pembayarannya
+       tidak pernah ditangkap kalau webhook gagal. (Di data: 5 dari 8 order berstatus cancelled,
+       2 order pending yang tidak pernah dicek lagi setelah kedaluwarsa.)
+    2. Tidak ada pengecek latar belakang: order hanya dicek saat halaman pembeli terbuka.
+    3. expired_at BuatQris (WIB tanpa zona waktu) dibaca sebagai UTC di server -> bergeser 7 jam
+       (QR yang sudah mati bisa "dipakai ulang" sampai 7 jam).
+    4. Login menyimpan username "trim + spasi -> _", form pembelian TIDAK -> "Mafat Music" mendapat
+       role untuk "mafat music", bukan "Mafat_Music".
+    5. Hasil setRole() tidak dicek: order ditandai lunas walau role gagal diberikan.
+    6. Beli tier yang sama saat masih aktif MENIMPA sisa hari (sisa hilang); admin/owner/dev atau
+       VVIP aktif yang membeli VIP bisa diturunkan rolenya.
+  Perbaikan:
+    * routes/vvip.js: pembatalan otomatis DIHAPUS. Order berstatus pending/cancelled/expired/failed
+      (72 jam terakhir, VVIP_SHOP.RECONCILE_WINDOW_HOURS) dicek ulang ke BuatQris oleh pengecek
+      latar belakang (tiap menit; order < 2 jam tiap 45 dtk, lebih tua tiap 15 menit; sapu bersih
+      sekali 20 dtk setelah server start) dan lewat polling halaman (?fresh=1 saat pembeli kembali
+      dari aplikasi bank). Yang ternyata lunas otomatis diaktifkan + admin dikabari.
+    * activateVvipOrder: idempoten; perpanjangan MENAMBAH sisa hari; tidak pernah menurunkan role;
+      akun staff tidak diubah; hasil setRole diperiksa (gagal -> alarm "PEMBAYARAN MASUK TAPI ROLE
+      GAGAL" + bisa diulang); peringatan salah ketik kalau username belum pernah terlihat di app.
+    * lib/vvipShop.js: normalizeUsername/validateUsername (sama persis dgn login, maks 40), parsing
+      waktu WIB yang benar (expiredAtMs), listRecoverableOrders, findOrdersByUsername.
+    * USERNAME WAJIB: server menolak kosong/terlalu panjang/karakter terlarang, dan memblokir
+      pembelian tak masuk akal (akun admin/owner/dev; VVIP aktif membeli VIP).
+    * public/vvip.html: username wajib + terisi otomatis & terkunci dari akun login (bisa dibuka
+      "Bukan kamu?"), konfirmasi username sebelum bayar, normalisasi spasi tanpa "_" nyasar di
+      akhir, tidak lagi menimpa akun login, order berjalan disimpan & DILANJUTKAN setelah
+      refresh/kembali dari aplikasi bank, status "cancelled" tidak menampilkan kartu gagal.
+    * Bot: /cekorder [username|trxId] (riwayat + cek langsung ke BuatQris + pemulihan otomatis),
+      /aktifkanorder <trxId> (aktivasi manual).
+[/LISTROLES MENAMPILKAN VIP + BACKUP MENYEBUT VIP]
+  * /listroles dulu hanya menampilkan Owner/Dev/Admin/VVIP -- user VIP TIDAK tampil sama sekali
+    (padahal ada di titel.json & ikut backup). Sekarang ada baris "💎 VIP (n)" + sisa hari; daftar
+    panjang dipecah per pesan (batas 4096). /apkadduser menerima role vip.
+  * Caption backup menampilkan "Role tersimpan: 30 VVIP · 4 VIP · ..." dan "Order pembelian: n VIP ·
+    n VVIP" (orders.json memuat order VIP + VVIP; titel.json memuat semua role).
+[MODERASI ROBLOX YANG LAMA TIDAK LAGI MEMBUAT REQUEST MACET]
+  * Dulu polling menyerah setelah ~90 menit: request tetap "pending" selamanya dan begitu Roblox
+    menyetujui, izin/share tidak pernah diproses (di backup ada 3 audio yang sudah 6 jam menunggu).
+    Sekarang: 90 menit pertama tiap 15 dtk, lalu tiap 5 menit, baru menyerah setelah 48 jam
+    (ditutup sebagai "gagal": limit user + kuota sesi dikembalikan). Patokan waktu tersimpan
+    (addedAt) sehingga restart server tidak mengulang dari awal.
+[PERBAIKAN LAIN DARI PEMERIKSAAN STATIS]
+  * bot/messages.js: /mixing SELALU gagal (sanitizeFilename tidak di-import).
+  * config.js: YT_RETRY_BACKOFF_MS, YT_TOTAL_BUDGET_MS, PERM_RETRY_DELAYS_MS didokumentasikan.
+  * Pemeriksa statis (variabel tak terdefinisi + impor yang hilang di seluruh modul & skrip HTML):
+    bersih. 10 suite uji (mode otomatis, limit, download, izin, database, pembelian server &
+    front-end end-to-end, moderasi, listroles/backup) lulus semua.
+
+[FIX AUTO-GRANT IZIN AUDIO ("AUTO PREMISION") -- SESUAI DOKUMENTASI RESMI ROBLOX]
+  * Penyebab (terbukti dari hasil /permtest: 20 percobaan, semuanya HTTP 400 "Invalid SubjectType
+    is invalid" walau tipe "Group" sudah benar): request salah bentuk. Dokumentasi resmi
+    (PATCH /asset-permissions-api/v1/assets/permissions, BatchGrantPermissionsRequest) meminta
+    subjectType, subjectId, dan action di LEVEL ATAS body, bukan di dalam requests[]:
+        { "subjectType": "Group", "subjectId": "35858415", "action": "Use",
+          "requests": [ { "assetId": 89788234745968 } ] }
+    Kode lama menaruh subjek di dalam requests[] -> Roblox membacanya kosong (= "Invalid").
+  * lib/robloxAudio.js: body dibuat sesuai dokumentasi. Tujuan dicoba berurutan
+    Group -> Experience (Universe/Experience) -> User; berhenti di yang pertama berhasil.
+    Varian kecil dicoba hanya kalau perlu (ID angka/string, assetIds[], Content-Type
+    json-patch) dan yang berhasil diingat (database/roblox_perm_variant.json).
+  * 200 tidak lagi otomatis dianggap sukses: successAssetIds harus memuat asset dan errors[]
+    kosong; kode error per-asset dari Roblox ditampilkan. Respons kosong = sukses "belum
+    terverifikasi" (ditandai).
+  * Dibuang: varian jalur /assets/{id}/permissions (menghasilkan "403 XSRF token invalid" yang
+    membuat petunjuk lama salah menuduh "akun tidak punya hak").
+  * Error dibedakan: 401 = key salah; 403 = akun tak berhak ke tujuan itu -> tujuan berikutnya;
+    400 = varian salah; 404/409/5xx/429 = dicoba ulang (2, 6, 15 dtk), tidak dikeroyok.
+  * Jalur cookie (AUTH_COOKIE) ikut memakai bentuk body yang benar.
+  + /permtest [assetId] menampilkan tiap percobaan; /grantid & /premision memakai petunjuk baru.
+
+[FIX: "ENOSPC: no space left on device" / MEMORI SERVER SERING PENUH]
+  * Akar masalah: SEMUA file sementara (hasil download YouTube, file dari Telegram,
+    frame video, gambar banner, upload mobile, cache) ditulis ke os.tmpdir() = /tmp.
+    Di Pterodactyl /tmp itu TMPFS: isinya ada di RAM (ikut dihitung memori container)
+    dan kapasitasnya kecil (bawaan sekitar 100 MB). Sekali penuh -> semua penulisan
+    gagal "ENOSPC" (contoh: Banner Request #mu9st9442mrb). Cache YouTube yang saya
+    tambahkan sebelumnya (batas 400 MB) memperparah ini -- sudah diperbaiki.
+  + lib/tempdir.js (baru): semua file sementara pindah ke folder tmp/ DI DALAM folder
+    server (disk biasa, bukan RAM). Batas total TMP_MAX_MB=300 (config.js).
+      - ensureBudget(): dicek SEBELUM menulis file besar (download Telegram sesuai
+        ukurannya, download YouTube, frame video, banner). Mepet -> dibersihkan
+        otomatis dulu; tetap tidak muat -> gagal dengan pesan jelas + Owner dikabari
+        (bukan ENOSPC mentah di tengah proses).
+      - Pembersih berkala tiap 10 menit (file > 2 jam), sisa proses lama dibuang saat
+        server start (> 30 menit), pembersih darurat saat tmp/ > 80% (cache YouTube
+        dibuang duluan, lalu file terlama; file yang baru dipakai < 2 menit aman).
+      - Alarm ke chat Owner (dibatasi 1x/jam per jenis) kalau tmp/ mepet, ruang
+        disk < MIN_FREE_MB=200, atau ENOSPC terjadi.
+  * ENOSPC saat upload ke Roblox: otomatis dibersihkan lalu DICOBA ULANG sekali
+    (user tidak perlu request ulang); kalau tetap gagal -> pesan "penyimpanan server
+    penuh -- admin sudah diberi tahu", limit dikembalikan. File video dipertahankan
+    supaya percobaan ulang bisa jalan.
+  * Route web/mobile: penyimpanan penuh -> HTTP 503 dengan pesan jelas (bukan
+    "terjadi kesalahan"), limit tidak terpakai.
+  * Cache YouTube: pindah ke tmp/yt-cache, batas dikecilkan (25 file/120 MB, 3 jam),
+    berhenti menambah kalau tmp/ sudah > 60% penuh.
+  * Video (uploads/): batas UPLOADS_MAX_MB=400 -- video baru ditolak sementara kalau
+    lewat batas; file sisa (yatim > 30 menit, tidak dirujuk request pending) dibuang
+    otomatis; video request yang DITOLAK/GAGAL langsung dihapus; video VIP/VVIP
+    dihapus segera setelah sukses (hasilnya cuma masuk "ID Saya"); TTL 72 -> 48 jam.
+  + Perintah bot: /disk (pemakaian per folder + sisa ruang disk + bar batas) dan
+    /cleartmp (bersihkan file sementara sekarang juga).
+
+[SYLVATICA UTAMA, PROVIDER LAIN HANYA SAAT DIBUTUHKAN]
+  * config.js: YT_PRIMARY_PROVIDERS = ['Sylvatica'] (selalu dicoba duluan),
+    YT_FALLBACK_PROVIDERS = null (semua provider lain jadi CADANGAN; [] = tanpa
+    cadangan, atau daftar nama tertentu), YT_PRIMARY_ATTEMPTS = 2.
+    (Menggantikan YT_ACTIVE_PROVIDERS dari versi sebelumnya.)
+  * Alur (lib/audio.js -> ytDownloadRaw):
+      1. Sylvatica dicoba; kalau gagal sementara (timeout/5xx/balasan error) dicoba
+         ulang 1x setelah jeda 2,5 dtk.
+      2. BARU kalau masih gagal -> provider cadangan dipanggil BERTAHAP (bukan
+         sekaligus): yang paling sehat & cepat dulu, cadangan berikutnya hanya ikut
+         kalau yang jalan gagal/kelamaan, maks 6 provider dan 75 dtk.
+      3. Sylvatica kena limit (429)/diblokir -> tanpa coba ulang, LANGSUNG ke cadangan.
+      4. Sylvatica lagi diistirahatkan (limit/error berulang) -> request berikutnya
+         melewatinya dan langsung ke cadangan; kalau SEMUA cadangan gagal, Sylvatica
+         tetap dicoba sebagai upaya terakhir.
+      5. Link yang sudah mati (oEmbed 404) -> berhenti, cadangan tidak dipanggil.
+      6. Kalau sisa waktu total mepet (YT_TOTAL_BUDGET_MS=90 dtk), cadangan/putaran
+         ulang tidak dimulai.
+  * Normalnya cuma 1 hit API per request (Sylvatica); cache 6 jam, gabung request
+    kembar, dan lewati encode ulang MP3 standar tetap aktif.
+  * /ytstatus: dipisah 🥇 UTAMA dan 🛟 CADANGAN (status, sukses/gagal, kecepatan).
+
+[PROVIDER BARU: SYLVATICA (UPGRADE) & FAA]
+  * Sylvatica: apikey diganti ke yang baru (akun sudah di-upgrade) di apis.js
+    (SYLVATICA_YTMP3) dan dijadikan provider PERTAMA di urutan awal (urutan
+    sebenarnya tetap diatur otomatis berdasar rekam jejak). Kodenya diganti ke
+    pembaca respons generik (JSON / teks URL / file langsung).
+  * FAA: GET https://api-faa.my.id/faa/ytmp3?url=<yt> (tanpa apikey), ditaruh
+    setelah Xyurei. Response asli belum diketahui -- kalau bentuknya tak dikenali,
+    isinya dicatat di log ("[FAA] Respons tak dikenali") dan bisa dilihat di
+    /ytstatus (error terakhir).
+  * Urutan awal sekarang: Sylvatica, AlwaysCodex v4/v2/v1/v3, Xyurei v1/v2, FAA,
+    TermAI, Clutch, Neosoft, Kyzznekoo, XyloAPI, Jerexd, MediaDownloader.
+
+[FIX ALWAYSCODEX: PATH ENDPOINT SALAH]
+  * Penyebab AlwaysCodex selalu error padahal servernya normal: apis.js memanggil
+    /api/downloader/youtube2 dan /youtube3 (TANPA huruf "v"). Path yang benar
+    /api/downloader/youtubev1 .. youtubev4.
+  * apis.js: ALWAYSCODEX_YOUTUBE_V1..V4 (menggantikan ALWAYSCODEX_YOUTUBE2/3).
+  * lib/audio.js: 4 provider AlwaysCodex -- v4 (?url=), v2 (?url=), v1
+    (?url=&quality=mp3), v3 (?url=&json=0) -- jadi kelompok UTAMA (urutan awal
+    v4, v2, v1, v3; urutan sebenarnya diatur otomatis berdasar rekam jejak).
+  * Pembaca respons provider generik sekarang menangani 3 bentuk: JSON, teks URL
+    polos, dan LANGSUNG file audio (mis. json=0 / redirect ke file) -- file
+    langsung dipakai tanpa request kedua. Timeout 25 dtk nunggu respons, +90 dtk
+    kalau ternyata file audio.
+
+[DOWNLOAD LINK YOUTUBE: JAUH LEBIH JARANG GAGAL, LEBIH CEPAT, API TIDAK DIKEROYOK]
+  * Penyebab utama gagal: SETIAP request nembak SEMUA provider (10+) BERSAMAAN
+    -> 10+ hit API per request (kena rate-limit/blokir, "API kesepam"), plus
+    10+ download dan 10+ ffmpeg paralel yang bikin CPU/RAM server keteter (timeout
+    & gagal padahal downloadnya sebenarnya berhasil). Kalau 3 request masuk
+    barengan = 30+ hit sekaligus.
+  + lib/ytOrchestrator.js (baru): provider dicoba BERTAHAP (hedging) -- yang
+    terbaik jalan duluan, cadangan baru ikut kalau yang pertama gagal atau
+    kelamaan (YT_HEDGE_DELAY_MS). Umumnya cuma 1-2 hit per request. Kalau semua
+    lambat, naik pelan-pelan; dibatasi YT_MAX_ATTEMPTS=6 provider per putaran
+    dan batas waktu total YT_DEADLINE_MS=75 dtk.
+  + Kesehatan provider: yang kena limit (429) istirahat 5 menit, diblokir
+    (401/403) 15 menit, error berturut-turut istirahat 2-20 menit (backoff);
+    urutan coba otomatis diurutkan ulang berdasar rekam jejak & kecepatan.
+    Kegagalan karena LINK/konten (semua provider gagal) tidak menghukum provider.
+  + Putaran ulang sekali (YT_MAX_ROUNDS=2) untuk provider yang gagalnya sementara
+    (timeout/5xx/koneksi).
+  + lib/ytCache.js (baru): hasil download disimpan 6 jam (maks 40 file/400 MB);
+    video yang sama (bentuk link apa pun, ID sama) langsung dipakai tanpa nembak
+    API. Request yang masuk BARENGAN untuk video yang sama digabung jadi 1
+    download.
+  + Link yang sudah mati (oEmbed 404): berhenti setelah provider pertama gagal,
+    tidak mengeroyok API lain; user dapat pesan yang jelas ("video dihapus/privat")
+    bukan "server bermasalah". (Tidak menolak di depan -- video valid yang salah
+    terdeteksi tetap lolos lewat provider.)
+  * Lebih cepat: file yang SUDAH MP3 standar (mp3, 44.1/48 kHz) tidak diencode
+    ulang (dulu SELALU encode 192k, juga lagi pas upload ke Roblox); ffprobe
+    cuma sekali (durasi dipakai ulang di route web & mobile); file > 60 MB
+    (Content-Length) ditolak sebelum dibaca ke RAM.
+  + Provider baru: Xyurei-v1 (/api/download/ytmp3) & Xyurei-v2 (/ytmp3v2) dengan
+    apikey di apis.js. Pencari link toleran terhadap bentuk response (belum
+    ada contoh response asli -- lihat /ytstatus setelah dipakai).
+  + /ytstatus (bot): status tiap provider (sehat/istirahat, sukses/gagal,
+    kecepatan rata-rata, error terakhir).
+
+[MAINTENANCE: KUNCI PAKSA, TIDAK BISA DIAKALI LEWAT HISTORY / ID SAYA]
+  * Celah lama: tombol "Tiket CS" di layar maintenance MENUTUP overlay-nya
+    (bypassToTab), lalu user bisa pindah ke History / ID Saya dan balik ke
+    menu request -- overlay baru muncul lagi pas polling 30 detik ("kadang").
+    Balik dari halaman ID Saya (link kembali / tombol Back browser) juga
+    ada jeda sebelum overlay nongol.
+  * public/index.html:
+      - Tiket CS sekarang cuma membuka widget tiket DI ATAS overlay; overlay
+        gak pernah ditutup dari sisi user selama maintenance masih aktif.
+      - Tab request (lagu/banner/video) TERKUNCI saat maintenance: coba
+        dibuka -> overlay dipaksa muncul lagi + status dicek ulang saat itu
+        juga. Kalau tab request lagi aktif pas maintenance terdeteksi,
+        otomatis dipindah ke tab lain.
+      - Status dicek ulang SEGERA tiap pindah tab, pindah tab browser,
+        fokus balik, dan tombol Back browser (pageshow) -- gak nunggu 30 detik.
+      - Flag 'wanz_maint_on' (localStorage) dibagi ke idsaya.html: pas balik
+        ke menu request, overlay LANGSUNG dipasang sebelum fetch selesai.
+      - Fail-closed: kalau cek status gagal (jaringan putus) saat lagi
+        maintenance, overlay tidak dilepas. Dilepas HANYA kalau maintenance
+        dimatikan (atau user = admin/owner/dev).
+      - Mode OFFLINE ikut diperbaiki: tombol Tiket CS tidak lagi menutup overlay.
+  * public/idsaya.html: notifikasi "App sedang maintenance" + sinkron flag di atas.
+
+[/SETROLE DENGAN DURASI CUSTOM]
+  * Format baru: /setrole username,display,role[,durasi...]  (koma ATAU spasi;
+    pakai koma kalau display berisi spasi).
+  * role: member | vip | vvip | admin | owner | dev (vip sebelumnya tidak
+    bisa di-set lewat command).
+  * durasi (hanya vip/vvip): angka + d (hari) / w (minggu = 7 hari) /
+    m (bulan = 30 hari). Contoh: 1d, 21w, 1m. Boleh digabung dan dijumlahkan:
+    1m,2w,3d = 47 hari. Tanpa durasi = default 3 bulan (perilaku lama).
+    Dihitung dari SEKARANG (set ulang = ganti/perpanjang masa aktif).
+    Maks 10 tahun. Durasi untuk role selain vip/vvip ditolak.
+  * Parameter nomor WA (format lama, 8+ digit) tetap diterima tapi diabaikan.
+  * lib/roles.js: parseDurationTokens(); respons bot menampilkan sampai kapan
+    (WIB).
+
+[KREDENSIAL]
+  * config.js: ASSET_TOKEN (upload audio) & CREATOR_UID diganti ke akun
+    Roblox baru (ownerId di dalam API key cocok dengan CREATOR_UID) dan
+    BUATQRIS_SECRET_TOKEN diganti ke yang baru.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  v19 — September 2026
+
+[HALAMAN "ID SAYA" — SEKARANG BERDIRI SENDIRI]
+  + public/idsaya.html (baru) — halaman terpisah (bukan cuma tab di
+    index.html) khusus buat login username & ambil/download ID
+    lagu/banner/video yang sudah di-ACC. Otomatis nolak & ngarahin ke
+    /vvip.html kalau username-nya bukan vip/vvip. Pakai endpoint lama
+    yang sudah ada (/api/my-role, /api/my-private-ids, .../download),
+    JADI TIDAK PERLU PERUBAHAN BACKEND.
+  + Tab "ID Saya" di index.html sekarang ada link "Buka sebagai halaman
+    terpisah" ke /idsaya.html.
+
+[UPGRADE VVIP -> UPGRADE AKSES (2 PILIHAN TIER)]
+  * public/vvip.html dirombak total: sekarang nampilin 2 kartu tier
+    (💎 VIP & 🌟 VVIP) yang bisa dipilih, masing-masing dengan harga,
+    limit, judul, dan modal benefit SENDIRI-SENDIRI (backend-nya --
+    config.js VVIP_SHOP.PRICE_PER_WEEK & lib/roles.js ROLE_LIMITS --
+    sebenarnya sudah mendukung 2 tier ini sejak sebelumnya, cuma
+    frontend-nya yang belum kepakai).
+  * Semua teks "Upgrade VVIP" diganti "Upgrade Akses" (tombol di
+    index.html, judul halaman, pesan kunci Video Tron).
+  * Harga per minggu: VIP Rp5.000 (5 lagu, 3 banner, 1 video/hari),
+    VVIP Rp10.000 (10 lagu, 5 banner, 1 video/hari).
+
+[PEMBELIAN WAJIB MINGGUAN]
+  * config.js: VVIP_SHOP.MIN_DAYS 1 -> 7, PRESETS [7,30,90,180] hari
+    -> [7,14,28,56] hari (1/2/4/8 minggu). Input custom di vvip.html
+    sekarang dalam satuan MINGGU (bukan hari lagi) lalu dikali 7
+    sebelum dikirim ke backend -- jadi durasi pembelian pasti selalu
+    kelipatan minggu.
+
+[BUG FIX]
+  * Video Tron ternyata sudah dijatah buat role vip (limit 1x/hari)
+    di backend (lib/roles.js ROLE_LIMITS), TAPI frontend index.html
+    masih ngunci tab-nya cuma buat vvip/admin/owner/dev -- vip gak
+    kebagian walau udah bayar. Sekarang vip ikut kebuka juga.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  v18 — September 2026
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[HALAMAN "ID SAYA" — INBOX PRIVAT VIP/VVIP]
+  + lib/privateInbox.js (baru) — nyimpen ID request yang di-ACC per user
+    (database/user/privateIds.json), khusus role vip/vvip.
+  * ID request vip/vvip yang di-ACC SEKARANG GAK LAGI otomatis nyasar ke
+    saluran WA publik -- disimpen privat di halaman "ID Saya" (tab baru
+    di website & endpoint APK), cuma bisa dilihat sama yang bersangkutan.
+  + Tab "ID Saya" (public/index.html) — daftar ID lagu/banner/video yang
+    udah di-ACC, badge notifikasi kalau ada ID baru masuk (browser
+    notification, polling tiap 10 detik), + tombol download semua ID
+    dalam format .txt.
+  + Endpoint baru: GET /api/my-private-ids, /api/my-private-ids/unseen-count,
+    /api/my-private-ids/download (dan versi /api/mobile/... buat APK).
+  * User BUKAN vip/vvip: tetap ke saluran WA publik seperti biasa, TIDAK
+    ADA PERUBAHAN.
+  * /setwa (DM WA pribadi) TETAP dipertahankan sebagai privilege TAMBAHAN
+    di atas halaman "ID Saya" -- kalau nomor WA pribadi vip/vvip di-set,
+    ID/file-nya tetap dikirim ke situ JUGA (bukan pengganti fitur inbox).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  v17 — Juli 2026
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[RENAME]
+  * Folder bridge/ -> api/ (biar gak ketuker sama "app" yang dibuild
+    jadi APK). Config BRIDGE_URL/BRIDGE_ADMIN_KEY -> API_URL/API_ADMIN_KEY.
+
+[SISTEM ROLE BARU — lib/roles.js]
+  + Role: member (default) / vvip / admin / owner
+  + VVIP  : bonus otomatis +5 limit lagu & banner
+  + Admin & Owner : full akses (bypass limit, ban, sesi tertutup,
+    app off/maintenance) — sama kayak dev, berlaku di web & APK
+  + Command bot: /setrole /listroles /checkrole
+
+[SATU BOT SAJA]
+  * Bot Telegram terpisah di api/index.js dihapus total.
+  * api/index.js sekarang cuma nyediain endpoint /admin/* (dikunci
+    x-admin-key) yang dipanggil dari BOT PANEL UTAMA lewat command
+    baru: /apkadduser /apkdeluser /apkextend /apklist /apkinfo
+    /apkkick /apkstats
+
+[LOGIN APK]
+  * Gak pakai password lagi — persis kayak website (ketik username,
+    langsung masuk).
+  * Auto-register: username baru otomatis kedaftar saat login pertama,
+    gak perlu didaftarin admin dulu.
+
+[BUG FIX]
+  + Rate limit APK: checkRateLimit() dulu dipanggil salah (string,
+    bukan objek req) + baca properti .ok yang gak pernah ada -> semua
+    request APK selalu ketolak "limit habis". Sekarang bener.
+  + Refund otomatis limit lagu/banner kalau request gagal terkirim
+    (dulu limit tetep kepotong walau gagal).
+  + Reset limit personal semua user otomatis tiap server restart/update.
+
+[LAIN-LAIN]
+  + Tiket dari akun WanzzGantengBanget sekarang cuma nampilin "Nama:
+    Owner" ke admin, username-nya disembunyiin.
+  + History request gak bisa diakses lagi pas app off/maintenance
+    (cuma Tiket CS yang tetep bisa).
+  + /limitstats — command baru buat cek berapa user yang limitnya
+    lagi habis + status sesi lagu/banner saat ini.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  v16 — Juli 2026 (Update Besar)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[MODULARISASI]
+  + server.js dipecah menjadi 17 file terpisah per tanggung jawab:
+      lib/util.js          — helper murni (getTime, makeId, dll)
+      lib/store.js         — semua baca/tulis data JSON
+      lib/ratelimit.js     — kuota request per user
+      lib/telegram.js      — komunikasi Telegram Bot API
+      lib/uploads.js       — konfigurasi multer (upload file)
+      lib/auth.js          — middleware admin key (logs.html)
+      lib/backup.js        — snapshot otomatis data
+      lib/audio.js         — download YouTube & FFmpeg mixing
+      lib/menu.js          — halaman menu Admin/Own panel
+      routes/api.js        — semua endpoint REST website
+      bot/apply-status.js  — update status request + tombol
+      bot/callback.js      — handler tombol inline Telegram
+      bot/messages.js      — dispatcher 70+ command teks
+      bot/handler.js       — router update Telegram
+      bot/poller.js        — long-polling getUpdates
+      server.js            — entry point (42 baris)
+  + apis.js — semua URL endpoint API pihak ketiga dipisah
+  + backup-config.js — konfigurasi lokasi & jadwal backup
+
+[BOT TELEGRAM — FITUR BARU]
+  Admin Menu (bisa dipakai owner & sub-admin):
+    + /today        — request masuk hari ini
+    + /queue        — ringkasan antrian lagu vs banner
+    + /detail <id>  — detail lengkap 1 request
+    + /claim <id>   — klaim request (tandai sedang diproses)
+    + /unclaim <id> — lepas klaim
+    + /whoclaim <id>— cek siapa yang klaim
+    + /myclaims     — daftar klaim aktif
+    + /reopen <id>  — kembalikan ke pending
+    + /pin <id>     — highlight request di /list
+    + /unpin <id>   — lepas highlight
+    + /pinned       — lihat semua yang dipin
+    + /lastacc      — 5 request terakhir di-ACC
+    + /lasttolak    — 5 request terakhir ditolak
+    + /myinfo       — profil & statistik admin
+    + /finduser <u> — semua request dari 1 user
+    + /unreadtickets— tiket belum dibalas
+    + /lastticket   — tiket paling baru
+    + /remind <id>  — tandai sudah di-remind
+    + /cancel <id>  — batalkan request (soft tolak)
+    + /shortcuts    — cheat-sheet alias singkat
+    + /a /t /r      — shortcut acc/tolak/reopen
+
+  Own Menu (khusus owner):
+    + /broadcast <pesan>    — DM ke semua sub-admin
+    + /globalban <user>     — ban + auto-tolak semua request pending
+    + /purge <hari>         — hapus log lebih tua N hari
+    + /resetalllimit        — reset limit SEMUA user
+    + /lockdown [alasan]    — matikan app + request sekaligus
+    + /unlock               — buka kembali setelah lockdown
+    + /promote <id>         — alias ramah /addadmin
+    + /demote <id>          — alias ramah /removeadmin
+    + /listbackup           — daftar file backup tersimpan
+    + /getbackup <file>     — kirim 1 file backup ke chat
+    + /wipelogs confirm     — hapus SEMUA log (destruktif)
+    + /wipetickets confirm  — hapus SEMUA tiket (destruktif)
+    + /setgroup <id|off>    — ganti grup broadcast tanpa edit config
+    + /auditlog             — 15 command terakhir admin/owner
+    + /version              — info versi & status server
+    + /genmobilekey [label] — buat API key untuk APK
+    + /mobiletokens         — lihat semua mobile key
+    + /revokemobilekey <key>— nonaktifkan mobile key
+
+  /menu & /start:
+    + Sekarang muncul pilihan tombol: 🛠️ Admin Menu & 👑 Own Menu
+    + Admin Menu — 4 halaman, bisa dipakai semua admin
+    + Own Menu   — 5 halaman, khusus owner
+
+  Mode Chat Bot:
+    + /privatonly — semua command wajib dari private chat (default)
+    + /grouponly  — command biasa + broadcast request boleh ke grup
+    + Kontrol app/website tetap wajib private apapun mode
+
+[BOT TELEGRAM — FIX & IMPROVE]
+  + answerCallback dipanggil PERTAMA sebelum applyStatus
+    → tidak ada lagi loading spinner abadi di tombol ACC/Tolak
+  + Semua fetch ke Telegram API kini punya timeout (5–60 detik)
+    → tidak ada lagi request yang hang tanpa batas
+  + editMessageMarkup sekarang log error (bukan silent catch {})
+  + /list sekarang tampilkan 📌 pin & 🙋 klaim aktif
+  + chatId & text sekarang defined di top-level handleMessage
+    → fix semua command + ticket reply yang diam-diam tidak berjalan
+  + saveTicket ditambahkan ke import bot/messages.js
+    → fix ReferenceError: saveTicket is not defined
+  + Auto-delete pesan request saat ACC/Tolak
+    → semua salinan (owner + sub-admin + grup) terhapus sekaligus
+  + Auto-refund limit saat request DITOLAK
+    → slot kuota user otomatis kembali jika req ditolak
+
+[WEBSITE — FITUR BARU]
+  + 🌙/☀️ Dark/Light mode toggle (persist di localStorage)
+  + 🔔 Banner izin notifikasi browser (sopan, bukan auto-trigger)
+  + 🔔 Notifikasi browser otomatis saat ada balasan tiket baru
+  + 📋 Estimasi posisi antrian + perkiraan menit (tab Request Saya)
+  + 🔄 Auto-refresh tab Request Saya setiap 15 detik
+  + 🔍 Filter riwayat by status & tipe (Request Saya)
+  + ⭐ Rating bintang 1–5 setelah request di-ACC
+  + 🔗 Share/lacak status request via link (?track=id)
+  + 📊 Progress bar visual countdown reset limit
+  + 📱 PWA — manifest.json + sw.js + icon.svg (Add to Home Screen)
+
+[WEBSITE — BACKEND]
+  GET  /api/queue-position/:id     — posisi antrian + estimasi menit
+  GET  /api/track/:id              — status request publik (share link)
+  POST /api/request/:id/rating     — rating 1–5 request yang di-ACC
+  /api/limits ditambah windowMs    — dipakai progress bar cooldown
+
+[MOBILE API — BARU]
+  Endpoint /api/mobile/* dengan auth header x-mobile-key:
+    GET  /api/mobile/ping                — status app & pengumuman
+    GET  /api/mobile/limits?username=X   — sisa kuota
+    GET  /api/mobile/myrequests          — riwayat request user
+    GET  /api/mobile/track/:id           — status 1 request
+    POST /api/mobile/request             — kirim request lagu
+    POST /api/mobile/banner              — kirim request banner
+    POST /api/mobile/request/:id/rating  — rating
+    GET/POST/POST /api/mobile/ticket/*   — tiket CS
+
+[APK SOURCE — BARU]
+  Folder apk/ — Capacitor project siap build Android APK:
+    apk/apk-config.json     — kustomisasi nama, appId, warna, URL
+    apk/apply-config.js     — script apply config ke HTML
+    apk/capacitor.config.json
+    apk/package.json        — dependencies Capacitor
+    apk/www/index.html      — app lengkap (5 tab, 729 baris)
+    apk/README.md           — panduan build APK step by step
+
+[BRIDGE API — BARU]
+  Folder bridge/ — lapisan tengah APK ↔ Panel:
+    bridge/config.js  — domain, port, panel URL, bot token
+    bridge/index.js   — Express server + Telegram bot manage user
+    bridge/package.json
+  Bot Telegram bridge:
+    /adduser /deluser /extenduser /resetpass /listuser /info /kicksession
+
+[AUDIO DOWNLOADER]
+  + Sistem multi-provider dengan fallback otomatis:
+      1. Neosoft    (api.neosoft.best)
+      2. Synoxcloud  (api.synoxcloud.xyz)
+      3. Kyzznekoo  (kyzznekoo.zone.id)
+      4. Nanzz      (api-nanzz.my.id)
+      5. Danzy-ytmp3 (api.danzy.web.id)
+    Kalau provider 1 gagal → coba 2, dst. Semua gagal → error jelas.
+  + Nama file audio dikirim ke Telegram sesuai judul YT/nama asli
+    (bukan lagi nama file random dari disk)
+  + Mudah tambah provider baru: push 1 objek ke array PROVIDERS
+
+[KONFIGURASI — MUDAH DIUBAH]
+  config.js kini mencakup:
+    LIMIT_SONG, LIMIT_BANNER  — max request per periode
+    LIMIT_WINDOW_MS           — durasi periode (default 1.5 jam)
+    Contoh: 1.5 * 60 * 60 * 1000 = 1.5 jam
+  apis.js — semua base URL API pihak ketiga di 1 file
+  backup-config.js — lokasi folder & jadwal backup
+
+[DEFAULT BARU]
+  Limit request   : 2 lagu & 2 banner per 1.5 jam (sebelumnya 10/5 per 5 jam)
+  Sub-admin awal  : 8641203041, 7581289168, 8330884465
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  v16 — Jadwal & Kuota Global Request Lagu
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[REQUEST LAGU — SESI TERJADWAL + KUOTA]
+  + lib/songSchedule.js — modul baru, terpisah dari scheduler.js (app on/off)
+  + Buka otomatis di jam terjadwal, kuota default:
+      Sesi Siang : 14:00 WIB — 25 ID lagu pertama
+      Sesi Malam : 19:00 WIB — 10 ID lagu pertama
+  + Begitu kuota sesi habis → request LAGU saja yang ditutup otomatis
+    (banner & website tetap normal, BUKAN appoff/maintenance)
+  + Notifikasi Telegram otomatis saat sesi dibuka & saat kuota habis
+
+  Command baru (khusus Owner):
+    /setsongslot1|2|3 <HH:MM> <kuota> [label]  — atur jadwal + kuota
+    /clearsongslot1|2|3                        — hapus 1 slot
+    /clearallsongschedule                      — hapus semua jadwal
+    /listsongschedule                          — lihat jadwal & sesi aktif
+    /opensong [kuota]                          — buka manual kapan saja
+    /closesong [alasan]                        — tutup manual kapan saja
+    /songstatus                                — status sesi aktif saat ini
+
+  Catatan: buka/tutup manual (/opensong, /closesong) cuma override
+  sementara — jadwal otomatis tetap jalan dan akan override sesi
+  berikutnya sesuai jam yang sudah diatur.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  v15 — Rilis sebelumnya
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  + Request lagu & banner dari website
+  + Notifikasi ke Telegram admin lengkap dengan tombol ACC/Tolak/Pending
+  + Rate limit per username (lagu & banner terpisah)
+  + Sistem tiket CS (chat user ↔ admin via Telegram reply)
+  + Banner pengumuman admin (/announce)
+  + Kontrol app: /appoff /maintenance /appon
+  + Kontrol request: /offreq /onreq
+  + 19 command admin dasar
+  + Auto-backup data tiap 30 menit
+  + Lirik lagu via Danzy API
+  + YouTube search + audio preview di website
+  + Canvas-based banner generator (watermark wanz)
+  + Per-user rate limiting & bonus limit
+  + Ban list (blokir user dari request)
+  + Sub-admin system via /addadmin
+  + Floating AI chat popup (43-provider fallback)
+  + Scrolling announcement marquee
+  + PWA dasar (manifest)
+  + Deploy via Pterodactyl (auto-detect port)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  by wanz — https://copyright.by-wanzz.my.id/
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
