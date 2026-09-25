@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Upgrade Akses — Roblox Request Id Cor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#000000;--card:rgba(255,255,255,.03);--border:rgba(255,255,255,.12);--muted:#8a8a8a;--dim:#525252;--gold:#fbbf24;--blue:#38bdf8;--green:#10b981;--red:#ef4444}
+html{scroll-behavior:smooth}
+body{min-height:100vh;background:var(--bg);font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center}
+.wrapper{width:100%;max-width:480px;padding:36px 20px 64px}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:18px}
+.back-link:hover{color:#e5e5e5}
+header{text-align:center;margin-bottom:26px}
+.logo-outer{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#a16207,#fbbf24,#fef08a);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:30px;box-shadow:0 8px 32px rgba(251,191,36,.3)}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.4rem,5vw,1.8rem);font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:6px}
+.subtitle{font-size:13px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:28px 24px;backdrop-filter:blur(40px);box-shadow:0 20px 60px rgba(0,0,0,.5);margin-bottom:18px}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:16px}
+.field{margin-bottom:18px}
+.field-label{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:block}
+input[type=text],input[type=number]{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;color:#f1f5f9;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all .2s}
+input:focus{border-color:rgba(251,191,36,.6);background:rgba(255,255,255,.05)}
+
+/* ── Pilihan Tier (VIP / VVIP) ─────────────────────────────────────────── */
+.tier-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.tier-card{border:1px solid var(--border);border-radius:18px;padding:16px 12px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);transition:all .15s}
+.tier-card .t-ico{font-size:26px;margin-bottom:6px}
+.tier-card .t-name{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:15px;color:#f1f5f9;margin-bottom:2px}
+.tier-card .t-price{font-size:12px;color:var(--muted);margin-bottom:8px}
+.tier-card .t-limits{font-size:10.5px;color:var(--dim);line-height:1.6}
+.tier-card.vip.active{border-color:var(--blue);background:rgba(56,189,248,.1)}
+.tier-card.vip.active .t-name{color:var(--blue)}
+.tier-card.vvip.active{border-color:var(--gold);background:rgba(251,191,36,.1)}
+.tier-card.vvip.active .t-name{color:var(--gold)}
+.tier-benefit-link{display:block;text-align:center;font-size:12px;color:var(--muted);text-decoration:underline;margin:10px 0 20px;cursor:pointer;background:none;border:none;width:100%}
+
+.presets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.preset-btn{padding:10px 4px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
+.preset-btn.active{border-color:var(--gold);background:rgba(251,191,36,.12);color:var(--gold)}
+.custom-row{display:flex;align-items:center;gap:10px}
+.custom-row input{flex:1}
+.custom-row span{font-size:12px;color:var(--muted);white-space:nowrap}
+.price-box{display:flex;justify-content:space-between;align-items:baseline;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:14px;padding:14px 16px;margin:16px 0}
+.price-box .label{font-size:12px;color:#fde68a}
+.price-box .value{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:800;color:var(--gold)}
+.btn-buy{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#a16207,#fbbf24);color:#111;font-weight:800;font-size:14px;cursor:pointer;transition:filter .2s,transform .15s}
+.btn-buy:hover{filter:brightness(1.08)}
+.btn-buy:active{transform:scale(.98)}
+.btn-buy:disabled{opacity:.5;cursor:not-allowed}
+.notice{display:flex;gap:10px;padding:13px 14px;border-radius:14px;font-size:12.5px;line-height:1.5;margin-bottom:16px}
+.notice.warn{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);color:#fca5a5}
+.notice.info{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--muted)}
+.qr-box{text-align:center}
+.qr-box img{width:100%;max-width:260px;border-radius:16px;border:1px solid var(--border);background:#fff;padding:10px;margin:0 auto 16px;display:block}
+.qr-meta{font-size:13px;color:var(--muted);margin-bottom:4px}
+.qr-meta b{color:#f1f5f9}
+.qr-status{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:700;color:var(--gold);margin:14px 0}
+.dot-pulse{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.qr-timer{font-size:11px;color:var(--dim);margin-bottom:16px}
+.success-box{text-align:center;padding:8px 0}
+.success-icon{font-size:48px;margin-bottom:10px}
+.success-box h2{font-family:'Space Grotesk',sans-serif;color:var(--green);font-size:18px;margin-bottom:6px}
+.success-box p{font-size:13px;color:var(--muted);line-height:1.6}
+.btn-secondary{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:#e5e5e5;font-weight:700;font-size:13px;cursor:pointer;margin-top:12px;text-decoration:none;display:block;text-align:center}
+.field-hint{font-size:11px;color:var(--dim);margin-top:6px;line-height:1.5}
+.btn-download{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--green);font-weight:700;font-size:13px;cursor:pointer;margin-bottom:10px;text-decoration:none;display:block;text-align:center}
+.btn-download:hover{background:rgba(16,185,129,.16)}
+.hidden{display:none !important}
+.test-banner{background:repeating-linear-gradient(45deg,rgba(239,68,68,.15),rgba(239,68,68,.15) 10px,rgba(239,68,68,.22) 10px,rgba(239,68,68,.22) 20px);border:1px solid rgba(239,68,68,.5);border-radius:14px;padding:12px 14px;font-size:12px;color:#fecaca;font-weight:700;text-align:center;margin-bottom:16px;line-height:1.5}
+
+/* ── Modal Benefit ─────────────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-box{width:100%;max-width:420px;max-height:88vh;overflow-y:auto;background:#0a0a0a;border:1px solid rgba(251,191,36,.3);border-radius:24px;padding:26px 22px;box-shadow:0 30px 80px rgba(0,0,0,.7);transform:translateY(16px);transition:transform .2s}
+.modal-overlay.show .modal-box{transform:translateY(0)}
+.modal-title{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:800;color:#fff;text-align:center;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px}
+.benefit-list{list-style:none;margin-bottom:20px}
+.benefit-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.benefit-item:last-child{border-bottom:none}
+.benefit-ico{font-size:20px;flex-shrink:0;width:28px;text-align:center}
+.benefit-text b{display:block;font-size:13px;color:#f1f5f9;margin-bottom:2px}
+.benefit-text span{font-size:12px;color:var(--muted);line-height:1.5}
+.modal-summary{display:flex;justify-content:space-between;align-items:center;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:14px;padding:12px 16px;margin-bottom:16px;font-size:13px}
+.modal-summary b{color:var(--gold);font-family:'Space Grotesk',sans-serif;font-size:16px}
+.modal-actions{display:flex;flex-direction:column;gap:10px}
+.btn-modal-cancel{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-weight:700;font-size:13px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <a href="/index.html" class="back-link">← Kembali ke halaman request</a>
+  <header>
+    <div class="logo-outer">💎</div>
+    <h1>Upgrade Akses</h1>
+    <p class="subtitle">Pilih VIP atau VVIP, bayar pakai QRIS — aktif otomatis, tanpa nunggu admin</p>
+  </header>
+
+  <div id="testModeBanner" class="test-banner hidden">🧪 MODE TES AKTIF — akses diaktifkan GRATIS (Rp0) tanpa pembayaran apa pun. Ini cuma buat developer ngetes alur. Admin: matikan lewat <code>VVIP_SHOP.TEST_MODE</code> di config.js sebelum dipakai user asli!</div>
+
+  <div id="notConfiguredNotice" class="notice warn hidden">
+    ⚠️ Pembayaran otomatis belum diaktifkan admin. Silakan hubungi admin lewat menu Tiket di halaman utama.
+  </div>
+
+  <!-- STEP 1: pilih tier + durasi -->
+  <div class="card" id="formCard">
+    <div class="section-title">🎟️ Pilih Akses</div>
+
+    <div class="tier-grid" id="tierGrid"></div>
+    <button type="button" class="tier-benefit-link" id="viewBenefitLink">ℹ️ Lihat semua benefit tier ini</button>
+
+    <div class="field">
+      <label class="field-label">Username <span style="color:#f87171;text-transform:none;letter-spacing:0">(WAJIB)</span></label>
+      <input type="text" id="username" required maxlength="40" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Username login kamu (sama seperti di web/APK)"/>
+      <p class="field-hint" id="usernameErr" style="color:#f87171;display:none"></p>
+      <p class="field-hint" id="usernameLockNote" style="display:none">🔒 Terisi otomatis dari akun yang sedang login. <a href="#" id="unlockUsername" style="color:#fbbf24">Bukan kamu? Ganti username</a></p>
+      <p class="field-hint">Username LOGIN asli kamu — dipakai backend buat aktifin role, limit, dan riwayat pembelian. <b>Wajib diisi &amp; harus sama persis</b> dengan yang dipakai request lagu/banner. Salah ketik = akses masuk ke akun yang salah. Spasi otomatis jadi <code>_</code> (sama seperti saat login).</p>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Nama Tampilan <span style="color:var(--dim);text-transform:none;letter-spacing:0">(opsional)</span></label>
+      <input type="text" id="displayName" maxlength="40" placeholder="Kosongkan kalau mau pakai username asli"/>
+      <p class="field-hint">🔒 Kalau diisi, nama INI yang ditampilkan ke publik/admin (di app &amp; tiket) — <b>username asli kamu tetap disembunyikan</b>, sama seperti fitur "nama rahasia" yang sudah ada. Login &amp; limit tetap pakai username asli di atas, cuma tampilannya yang beda.</p>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Durasi (Minggu)</label>
+      <div class="presets" id="presetBtns"></div>
+      <div class="custom-row">
+        <input type="number" id="customWeeks" min="1" step="1" placeholder="atau isi jumlah minggu sendiri"/>
+        <span>minggu</span>
+      </div>
+      <p class="field-hint">Pembelian akses cuma bisa dalam kelipatan <b>minggu</b> (7 hari) — minimal 1 minggu.</p>
+    </div>
+
+    <div class="price-box">
+      <span class="label">Total Bayar</span>
+      <span class="value" id="priceValue">Rp 0</span>
+    </div>
+
+    <button class="btn-buy" id="buyBtn">🔳 Buat QRIS & Bayar</button>
+  </div>
+
+  <!-- STEP 2: QR menunggu pembayaran -->
+  <div class="card qr-box hidden" id="qrCard">
+    <div class="section-title" style="text-align:center;justify-content:center">Scan QRIS Ini</div>
+    <img id="qrImg" src="" alt="QRIS"/>
+    <a class="btn-download" id="downloadQrBtn" download="qris-akses.png">⬇️ Unduh QR (Simpan Gambar)</a>
+    <p class="qr-meta">Username: <b id="qrUsername"></b> &nbsp;•&nbsp; Tier: <b id="qrTier"></b> &nbsp;•&nbsp; Durasi: <b id="qrWeeks"></b> minggu</p>
+    <p class="qr-meta hidden" id="qrDisplayNameRow">Nama Tampilan: <b id="qrDisplayName"></b></p>
+    <p class="qr-meta">Total: <b id="qrAmount"></b></p>
+    <div class="qr-status"><span class="dot-pulse"></span><span id="qrStatusText">Menunggu pembayaran...</span></div>
+    <p class="qr-timer" id="qrTimer"></p>
+    <a class="btn-secondary" id="cancelOrderBtn">Batal / Buat Order Baru</a>
+  </div>
+
+  <!-- STEP 3: sukses -->
+  <div class="card hidden" id="successCard">
+    <div class="success-box">
+      <div class="success-icon">🎉</div>
+      <h2 id="successTitle">Akses Aktif!</h2>
+      <p id="successText">Pembayaran diterima dan role kamu sudah aktif otomatis. Nikmati bonus limit lagu, banner &amp; video selama masa aktif.</p>
+      <p id="successUsernameNote" class="qr-meta" style="margin-top:10px">👤 Aktif untuk username: <b id="successUsername"></b></p>
+      <p id="successDisplayNameNote" class="qr-meta hidden" style="margin-top:10px">🔒 Nama tampilan publik kamu: <b id="successDisplayName"></b></p>
+      <a class="btn-secondary" href="/idsaya.html">Buka Halaman "ID Saya"</a>
+      <a class="btn-secondary" href="/index.html">Kembali ke Halaman Request</a>
+    </div>
+  </div>
+
+  <!-- STEP 4: expired/gagal -->
+  <div class="card hidden" id="failedCard">
+    <div class="success-box">
+      <div class="success-icon">⌛</div>
+      <h2 style="color:#fca5a5" id="failedTitle">QR Kedaluwarsa</h2>
+      <p id="failedText">QR dibuat sudah lewat batas waktu tanpa pembayaran. Buat order baru untuk mencoba lagi.</p>
+      <a class="btn-secondary" id="retryBtn" href="#">Buat Order Baru</a>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Benefit -- muncul begitu tier dipilih / diganti, sebelum lanjut bayar -->
+<div class="modal-overlay" id="benefitModal">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">🌟 Kenapa Upgrade VVIP?</div>
+    <p class="modal-sub">Ini yang kamu dapetin sebelum lanjut bayar</p>
+    <ul class="benefit-list" id="benefitList"></ul>
+    <div class="modal-summary">
+      <span>Harga</span>
+      <b id="modalPriceSummary">-</b>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-buy" id="modalConfirmBtn">👍 Mengerti, Lanjut ke Form</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LOGIN_KEY = 'wanz_username';
+let CONFIG = null;
+let selectedTier = 'vvip';
+let selectedWeeks = null;
+let pollTimer = null;
+let currentTxId = null;
+let currentDisplayName = null;
+let currentUsername = null;
+const PENDING_KEY = 'vvip_pending_order';   // order QR yang sedang berjalan -- supaya bisa DILANJUTKAN setelah pembeli pindah ke aplikasi bank & kembali
+
+// Username dinormalisasi PERSIS seperti halaman login (trim + spasi -> "_").
+function normalizeUsername(v){ return String(v == null ? '' : v).trim().replace(/\s+/g, '_'); }
+function showUsernameError(msg){
+  const el = $('usernameErr');
+  el.textContent = msg || ''; el.style.display = msg ? 'block' : 'none';
+  $('username').style.borderColor = msg ? '#f87171' : '';
+}
+function savePending(o){ try { localStorage.setItem(PENDING_KEY, JSON.stringify(o)); } catch(e){} }
+function clearPending(){ try { localStorage.removeItem(PENDING_KEY); } catch(e){} }
+function loadPending(){ try { return JSON.parse(localStorage.getItem(PENDING_KEY) || 'null'); } catch(e){ return null; } }
+
+const $ = id => document.getElementById(id);
+
+function rupiah(n){ return 'Rp' + Number(n||0).toLocaleString('id-ID'); }
+
+// ── Metadata tampilan per tier (angka limit/harga ASLI datang dari server
+// lewat /api/vvip/config -- ini cuma buat teks & ikon, biar konsisten sama
+// lib/roles.js ROLE_LIMITS & config.js VVIP_SHOP.PRICE_PER_WEEK) ───────────
+const TIER_META = {
+  vip: {
+    icon: '💎', name: 'VIP', badgeText: '💎 vip',
+    limitsShort: '5 lagu • 3 banner • 1 video / hari',
+    limits: { song: 5, banner: 3, video: 1 },
+  },
+  vvip: {
+    icon: '🌟', name: 'VVIP', badgeText: '🌟 vvip',
+    limitsShort: '10 lagu • 5 banner • 1 video / hari',
+    limits: { song: 10, banner: 5, video: 1 },
+  },
+};
+
+function benefitListHtml(tier){
+  const m = TIER_META[tier];
+  return `
+    <li class="benefit-item">
+      <span class="benefit-ico">📈</span>
+      <span class="benefit-text"><b>Limit Request Jauh Lebih Gede</b><span>${m.limits.song} request lagu, ${m.limits.banner} request banner & ${m.limits.video} request video Roblox Tron per hari — reset tiap 24 jam, bukan tiap 1,5 jam kayak member biasa.</span></span>
+    </li>
+    <li class="benefit-item">
+      <span class="benefit-ico">🚪</span>
+      <span class="benefit-text"><b>Bebas Sesi/Kuota Ditutup</b><span>Tetep bisa request walau sesi lagu global lagi ditutup buat member biasa.</span></span>
+    </li>
+    <li class="benefit-item">
+      <span class="benefit-ico">🛠️</span>
+      <span class="benefit-text"><b>ID Saya Tetap Bisa Dibuka Saat Maintenance</b><span>Walau app lagi maintenance, halaman "ID Saya" kamu tetap bisa dibuka buat ambil ID (request baru baru bisa lagi setelah maintenance selesai).</span></span>
+    </li>
+    <li class="benefit-item">
+      <span class="benefit-ico">🕵️</span>
+      <span class="benefit-text"><b>Nama Rahasia (Opsional)</b><span>Pakai nama tampilan sendiri di publik/tiket — username asli login kamu tetap disembunyikan.</span></span>
+    </li>
+    <li class="benefit-item">
+      <span class="benefit-ico">📥</span>
+      <span class="benefit-text"><b>Halaman "ID Saya"</b><span>ID lagu/banner/video yang di-ACC dikirim khusus ke halaman "ID Saya" (gak lewat WhatsApp) — disimpen privat, cuma kamu yang bisa lihat & download.</span></span>
+    </li>
+    <li class="benefit-item">
+      <span class="benefit-ico">🏅</span>
+      <span class="benefit-text"><b>Lencana ${m.name}</b><span>Badge <b>${m.badgeText}</b> otomatis muncul di app & tiket, gampang dikenalin admin.</span></span>
+    </li>`;
+}
+
+function openBenefitModal(tier){
+  const m = TIER_META[tier];
+  $('modalTitle').textContent = `${m.icon} Kenapa Upgrade ${m.name}?`;
+  $('benefitList').innerHTML = benefitListHtml(tier);
+  const info = CONFIG && CONFIG.tiers ? CONFIG.tiers[tier] : null;
+  if (info && info.presets && info.presets.length) {
+    $('modalPriceSummary').textContent = `Mulai ${rupiah(info.presets[0].price)} / minggu`;
+  }
+  $('benefitModal').classList.add('show');
+}
+
+function renderTierCards(){
+  const grid = $('tierGrid');
+  grid.innerHTML = '';
+  ['vip', 'vvip'].forEach(tier => {
+    const m = TIER_META[tier];
+    const info = CONFIG && CONFIG.tiers ? CONFIG.tiers[tier] : null;
+    const perWeek = info ? Math.round(info.pricePerDay * 7 / 100) * 100 : 0;
+    const el = document.createElement('div');
+    el.className = `tier-card ${tier}${tier === selectedTier ? ' active' : ''}`;
+    el.innerHTML = `
+      <div class="t-ico">${m.icon}</div>
+      <div class="t-name">${m.name}</div>
+      <div class="t-price">${rupiah(perWeek)}/minggu</div>
+      <div class="t-limits">${m.limitsShort}</div>`;
+    el.onclick = () => selectTier(tier, true);
+    grid.appendChild(el);
+  });
+}
+
+function selectTier(tier, showModal){
+  selectedTier = tier;
+  renderTierCards();
+  renderPresets();
+  if (CONFIG.tiers[tier].presets && CONFIG.tiers[tier].presets.length) {
+    selectWeeks(CONFIG.tiers[tier].presets[0].days / 7);
+    $('customWeeks').value = '';
+  }
+  if (showModal) openBenefitModal(tier);
+}
+
+function computeDisplayPrice(weeks){
+  if (!CONFIG || !weeks) return 0;
+  const info = CONFIG.tiers[selectedTier];
+  const days = weeks * 7;
+  const raw = info.pricePerDay * days;
+  return Math.max(100, Math.round(raw/100)*100);
+}
+
+function renderPresets(){
+  const wrap = $('presetBtns');
+  wrap.innerHTML = '';
+  const info = CONFIG.tiers[selectedTier];
+  (info.presets||[]).forEach(p => {
+    const weeks = p.days / 7;
+    const b = document.createElement('div');
+    b.className = 'preset-btn';
+    b.innerHTML = `${weeks} minggu<br>${rupiah(p.price)}`;
+    b.onclick = () => { selectWeeks(weeks); $('customWeeks').value=''; };
+    b.dataset.weeks = weeks;
+    wrap.appendChild(b);
+  });
+}
+
+function selectWeeks(weeks){
+  selectedWeeks = weeks;
+  document.querySelectorAll('.preset-btn').forEach(b => {
+    b.classList.toggle('active', Number(b.dataset.weeks) === Number(weeks));
+  });
+  $('priceValue').textContent = rupiah(computeDisplayPrice(weeks));
+}
+
+$('customWeeks').addEventListener('input', e => {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  const v = parseInt(e.target.value, 10);
+  selectedWeeks = Number.isFinite(v) && v > 0 ? v : null;
+  $('priceValue').textContent = rupiah(computeDisplayPrice(selectedWeeks || 0));
+});
+
+$('viewBenefitLink').addEventListener('click', () => openBenefitModal(selectedTier));
+
+async function loadConfig(){
+  try {
+    const r = await fetch('/api/vvip/config');
+    const d = await r.json();
+    CONFIG = d.data;
+    if (d.testMode) {
+      $('testModeBanner').classList.remove('hidden');
+      $('buyBtn').textContent = '🧪 Aktifkan Akses (TEST, Gratis)';
+    }
+    if (!d.configured && !d.testMode) {
+      $('notConfiguredNotice').classList.remove('hidden');
+      $('buyBtn').disabled = true;
+    }
+    renderTierCards();
+    renderPresets();
+    if (CONFIG.tiers[selectedTier].presets && CONFIG.tiers[selectedTier].presets.length) {
+      selectWeeks(CONFIG.tiers[selectedTier].presets[0].days / 7);
+    }
+
+    // Popup benefit muncul OTOMATIS begitu halaman dibuka (bukan nunggu klik
+    // beli) -- biar orang tau dulu untung-nya apa aja sebelum isi form.
+    openBenefitModal(selectedTier);
+  } catch (e) {
+    $('notConfiguredNotice').textContent = '⚠️ Gagal memuat konfigurasi. Coba muat ulang halaman.';
+    $('notConfiguredNotice').classList.remove('hidden');
+  }
+}
+
+function showCard(id){
+  ['formCard','qrCard','successCard','failedCard'].forEach(c => $(c).classList.toggle('hidden', c !== id));
+}
+
+$('benefitModal').addEventListener('click', (e) => {
+  if (e.target.id === 'benefitModal') $('benefitModal').classList.remove('show'); // klik area gelap = tutup
+});
+$('modalConfirmBtn').addEventListener('click', () => {
+  $('benefitModal').classList.remove('show');
+});
+
+$('buyBtn').addEventListener('click', () => submitOrder());
+
+async function submitOrder(){
+  const username = normalizeUsername($('username').value);
+  $('username').value = username;
+  const displayName = $('displayName').value.trim();
+  if (!username) {
+    showUsernameError('Username WAJIB diisi — isi username yang sama persis dengan username login kamu.');
+    $('username').focus();
+    return;
+  }
+  if (username.length > 40) { showUsernameError('Username maksimal 40 karakter.'); $('username').focus(); return; }
+  showUsernameError('');
+  if (!selectedWeeks || selectedWeeks < 1) return alert('Pilih atau isi jumlah minggu dulu.');
+  // Konfirmasi username SEBELUM bayar -- salah ketik = uang terpakai tapi akses masuk ke akun yang salah.
+  if (!confirm(`Akses akan diaktifkan untuk username:\n\n    ${username}\n\nPastikan SAMA PERSIS dengan username yang kamu pakai login/request. Salah username = akses TIDAK masuk ke akunmu.\n\nLanjut buat QRIS?`)) return;
+
+  $('buyBtn').disabled = true;
+  $('buyBtn').textContent = 'Membuat QRIS...';
+  try {
+    const days = selectedWeeks * 7;
+    const r = await fetch('/api/vvip/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, displayName, tier: selectedTier, days })
+    });
+    const d = await r.json();
+    if (!d.success) {
+      if (r.status === 429 && d.waitMs) { /* pesan cooldown udah jelas dari server */ }
+      alert(d.message || 'Gagal membuat order.');
+      return;
+    }
+
+    // Jangan menimpa akun yang sedang login dengan isian form (cuma isi kalau belum ada yang login).
+    if (!localStorage.getItem(LOGIN_KEY)) localStorage.setItem(LOGIN_KEY, username);
+    currentUsername = d.data.username || username;
+    currentTxId = d.data.transaction_id;
+    currentDisplayName = d.data.display_name || null;
+    const tierLabel = TIER_META[d.data.tier || selectedTier]?.name || (d.data.tier || selectedTier).toUpperCase();
+
+    // MODE TES: server udah langsung aktifin role-nya, gak ada QR sama
+    // sekali -- loncat langsung ke kartu sukses.
+    if (d.skip_qr) {
+      $('successUsername').textContent = currentUsername;
+      $('successTitle').textContent = `${tierLabel} Aktif!`;
+      if (currentDisplayName) {
+        $('successDisplayName').textContent = currentDisplayName;
+        $('successDisplayNameNote').classList.remove('hidden');
+      } else {
+        $('successDisplayNameNote').classList.add('hidden');
+      }
+      showCard('successCard');
+      return;
+    }
+    $('qrImg').src = d.data.qr_url || d.data.qris_image;
+    $('qrUsername').textContent = username;
+    $('qrTier').textContent = tierLabel;
+    $('qrWeeks').textContent = Math.round((d.data.days || days) / 7);
+    if (d.data.display_name) {
+      $('qrDisplayName').textContent = d.data.display_name;
+      $('qrDisplayNameRow').classList.remove('hidden');
+    } else {
+      $('qrDisplayNameRow').classList.add('hidden');
+    }
+    $('qrAmount').textContent = rupiah(d.data.total_amount || d.data.amount);
+
+    // Tombol unduh -- prioritas qris_image (data URI base64) karena "download"
+    // pasti kepicu tanpa terhalang CORS domain lain; kalau provider gak
+    // ngasih itu, fallback ke qr_url tapi dibuka tab baru (browser yang
+    // nentuin unduh/tampil tergantung header dari domainnya).
+    const dlBtn = $('downloadQrBtn');
+    const filename = `qris-${selectedTier}-${username}-${Math.round(days/7)}minggu.png`;
+    if (d.data.qris_image) {
+      dlBtn.href = d.data.qris_image;
+      dlBtn.setAttribute('download', filename);
+      dlBtn.removeAttribute('target');
+    } else if (d.data.qr_url) {
+      dlBtn.href = d.data.qr_url;
+      dlBtn.setAttribute('download', filename);
+      dlBtn.setAttribute('target', '_blank');
+    } else {
+      dlBtn.removeAttribute('href');
+    }
+
+    $('cancelOrderBtn').onclick = () => cancelCurrentOrder(currentUsername);
+    showCard('qrCard');
+    const expiryMs = d.data.expired_at_ms || (d.data.expired_at ? new Date(d.data.expired_at).getTime() : null);
+    savePending({ txId: currentTxId, username: currentUsername, tier: d.data.tier || selectedTier, tierLabel, days: d.data.days || days,
+      qrUrl: d.data.qr_url || d.data.qris_image, qrisImage: d.data.qris_image || null, amount: d.data.total_amount || d.data.amount,
+      displayName: currentDisplayName, expiredAtMs: expiryMs, savedAt: Date.now() });
+    startPolling(currentTxId, expiryMs, tierLabel);
+  } catch (e) {
+    alert('Gagal menghubungi server. Coba lagi.');
+  } finally {
+    $('buyBtn').disabled = false;
+    $('buyBtn').textContent = '🔳 Buat QRIS & Bayar';
+  }
+}
+
+function startPolling(txId, expiryMs, tierLabel){
+  stopPolling();
+  const expireTime = expiryMs ? Number(expiryMs) : null;   // epoch ms dari server (WIB sudah dikonversi dengan benar)
+
+  const showSuccess = (username) => {
+    stopPolling(); clearPending();
+    $('successUsername').textContent = username || currentUsername || '';
+    $('successTitle').textContent = `${tierLabel || 'Akses'} Aktif!`;
+    if (currentDisplayName) {
+      $('successDisplayName').textContent = currentDisplayName;
+      $('successDisplayNameNote').classList.remove('hidden');
+    } else {
+      $('successDisplayNameNote').classList.add('hidden');
+    }
+    showCard('successCard');
+  };
+
+  const tick = async (fresh) => {
+    if (expireTime) {
+      const left = expireTime - Date.now();
+      if (left <= 0) { $('qrTimer').textContent = 'Kedaluwarsa'; }
+      else {
+        const m = Math.floor(left/60000), s = Math.floor((left%60000)/1000);
+        $('qrTimer').textContent = `Berlaku ${m}m ${s}s lagi`;
+      }
+    }
+    try {
+      // fresh=1: pembeli baru kembali ke halaman -> server langsung cek ke penyedia pembayaran (tanpa cooldown panjang)
+      const r = await fetch('/api/vvip/status/' + encodeURIComponent(txId) + (fresh === true ? '?fresh=1' : ''), { cache: 'no-store' });
+      const d = await r.json();
+      if (!d.success) return;
+      if (d.data.status === 'paid') {
+        showSuccess(d.data.username);
+      } else if (d.data.status === 'expired' || d.data.status === 'failed') {
+        stopPolling(); clearPending();
+        $('failedTitle').textContent = d.data.status === 'expired' ? 'QR Kedaluwarsa' : 'Pembayaran Gagal';
+        $('failedText').textContent = d.data.status === 'expired'
+          ? 'QR dibuat sudah lewat batas waktu tanpa pembayaran. Buat order baru untuk mencoba lagi. (Kalau kamu SUDAH sempat membayar, akses tetap akan aktif otomatis dalam beberapa menit — tidak perlu bayar ulang.)'
+          : 'Pembayaran gagal. Buat order baru untuk mencoba lagi. (Kalau kamu SUDAH sempat membayar, akses tetap akan aktif otomatis dalam beberapa menit.)';
+        $('retryBtn').onclick = (e) => { e.preventDefault(); showCard('formCard'); };
+        showCard('failedCard');
+      }
+      // status 'cancelled' TIDAK menghentikan polling: QR masih hidup di penyedia pembayaran & bisa saja sudah/akan dibayar.
+    } catch (e) { /* diem, coba lagi di tick berikutnya */ }
+  };
+
+  tick();
+  pollTimer = setInterval(() => tick(), 4000);
+  window.__vvipTick = tick;   // dipanggil saat halaman kembali terlihat (setelah pindah ke aplikasi bank)
+}
+function stopPolling(){ if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
+
+// Dipanggil tombol "Batal / Buat Order Baru" -- order dibatalin BENERAN di
+// backend (bukan cuma disembunyiin di layar), jadi gak nyangkut 'pending'
+// nunggu expired_at yang bisa belasan menit lagi.
+function cancelCurrentOrder(username){
+  stopPolling(); clearPending();
+  const txId = currentTxId;
+  currentTxId = null;
+  if (txId) {
+    fetch('/api/vvip/cancel/' + encodeURIComponent(txId), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username }),
+    }).catch(() => {}); // gagal kirim gak masalah -- toh bakal auto-expired juga
+  }
+  showCard('formCard');
+}
+
+// PENTING: TIDAK ADA lagi pembatalan otomatis saat halaman ditutup/disembunyikan (dulu: pagehide -> sendBeacon
+// cancel). Itu penyebab utama "sudah bayar tapi tidak masuk": pembeli pindah ke aplikasi bank/e-wallet buat
+// membayar -> tab disembunyikan -> order ditandai DIBATALKAN padahal QR masih hidup. Sekarang order baru
+// berhenti kalau kedaluwarsa atau pembeli menekan "Batal" sendiri, dan server tetap mengecek pembayaran ke
+// penyedia meski status lokal sudah dibatalkan.
+// Begitu pembeli kembali ke halaman ini (dari aplikasi bank), langsung cek status tanpa nunggu polling berikutnya.
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && typeof window.__vvipTick === 'function' && currentTxId) window.__vvipTick(true);
+});
+window.addEventListener('pageshow', () => { if (typeof window.__vvipTick === 'function' && currentTxId) window.__vvipTick(true); });
+
+// Username: spasi DI TENGAH langsung jadi "_" (sama seperti saat login). Spasi di awal dibuang, dan spasi di
+// akhir dibiarkan saat mengetik (biar tidak jadi "_" nyasar) lalu dirapikan saat blur/submit -- sebelumnya semua
+// spasi langsung diganti "_" sehingga "nama " menjadi "nama_" (username salah!).
+$('username').addEventListener('input', (e) => {
+  const v = e.target.value.replace(/^\s+/, '').replace(/\s+(?=\S)/g, '_');
+  if (v !== e.target.value) e.target.value = v;
+  if (v.trim()) showUsernameError('');
+});
+$('username').addEventListener('blur', (e) => { e.target.value = normalizeUsername(e.target.value); });
+
+// Prefill username dari akun yang sedang login & KUNCI (readonly) supaya tidak salah ketik.
+const saved = normalizeUsername(localStorage.getItem(LOGIN_KEY));
+if (saved) {
+  $('username').value = saved;
+  $('username').readOnly = true;
+  $('username').style.opacity = '.85';
+  $('usernameLockNote').style.display = 'block';
+  $('unlockUsername').addEventListener('click', (e) => {
+    e.preventDefault();
+    $('username').readOnly = false; $('username').style.opacity = '';
+    $('usernameLockNote').style.display = 'none';
+    $('username').focus(); $('username').select();
+  });
+}
+
+// LANJUTKAN order yang sedang berjalan (mis. pembeli pindah ke aplikasi bank lalu kembali / me-refresh halaman).
+async function resumePendingOrder(){
+  const p = loadPending();
+  if (!p || !p.txId) return;
+  try {
+    const r = await fetch('/api/vvip/status/' + encodeURIComponent(p.txId), { cache: 'no-store' });
+    const d = await r.json();
+    if (!d.success) { clearPending(); return; }
+    currentTxId = p.txId; currentUsername = p.username; currentDisplayName = p.displayName || null;
+    const tierLabel = p.tierLabel || (p.tier || '').toUpperCase();
+    if (d.data.status === 'paid') {
+      startPolling(currentTxId, p.expiredAtMs, tierLabel); return;   // tick pertama menampilkan kartu sukses
+    }
+    const stillValid = p.expiredAtMs ? (Date.now() < p.expiredAtMs + 60000) : (Date.now() - (p.savedAt || 0) < 30*60*1000);
+    if ((d.data.status === 'pending' || d.data.status === 'cancelled') && stillValid) {
+      $('qrImg').src = p.qrUrl || p.qrisImage || '';
+      $('qrUsername').textContent = p.username;
+      $('qrTier').textContent = tierLabel;
+      $('qrWeeks').textContent = Math.round((p.days || 7) / 7);
+      $('qrAmount').textContent = rupiah(p.amount);
+      if (p.displayName) { $('qrDisplayName').textContent = p.displayName; $('qrDisplayNameRow').classList.remove('hidden'); } else { $('qrDisplayNameRow').classList.add('hidden'); }
+      const dlBtn = $('downloadQrBtn');
+      const src = p.qrisImage || p.qrUrl;
+      if (src) { dlBtn.href = src; dlBtn.setAttribute('download', `qris-${p.tier}-${p.username}.png`); }
+      $('cancelOrderBtn').onclick = () => cancelCurrentOrder(currentUsername);
+      showCard('qrCard');
+      startPolling(currentTxId, p.expiredAtMs, tierLabel);
+    } else {
+      clearPending();
+    }
+  } catch (e) { /* offline: biarkan, coba lagi saat dibuka berikutnya */ }
+}
+
+loadConfig().then(resumePendingOrder);
+</script>
+</body>
+</html>
