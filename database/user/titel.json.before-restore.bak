@@ -1,0 +1,53 @@
+{
+  "ppp": {
+    "role": "vvip",
+    "displayName": "tes",
+    "expiresAt": 1793143090972
+  },
+  "ranzz_coko": {
+    "role": "vvip",
+    "displayName": "ranzz",
+    "expiresAt": 1793144146045,
+    "waNumber": "6285647636778"
+  },
+  "plontodesign.prdctn": {
+    "role": "vvip",
+    "displayName": "plonto_gank_preset",
+    "expiresAt": 1793169879736,
+    "waNumber": "6287836042804"
+  },
+  "zebikrasyaa": {
+    "role": "vvip",
+    "displayName": "ZKproduction",
+    "expiresAt": 1793176182281,
+    "waNumber": "6285713030273"
+  },
+  "dapit": {
+    "role": "admin",
+    "displayName": "pak_de",
+    "expiresAt": null
+  },
+  "putra": {
+    "role": "admin",
+    "displayName": "nazriel",
+    "expiresAt": null
+  },
+  "sultan": {
+    "role": "vvip",
+    "displayName": "FEBRY",
+    "expiresAt": 1794136284740,
+    "waNumber": "6285236758361"
+  },
+  "wongkere": {
+    "role": "vvip",
+    "displayName": "kere",
+    "expiresAt": 1794192957747,
+    "waNumber": "6283857039321"
+  },
+  "sehan": {
+    "role": "vvip",
+    "displayName": "kjie_han",
+    "expiresAt": 1794283597650,
+    "waNumber": "6282216502688"
+  }
+}
