@@ -1,0 +1,10 @@
+{
+  "lagu": {
+    "enabled": false,
+    "message": "Request lagu ditutup oleh admin."
+  },
+  "banner": {
+    "enabled": false,
+    "message": "Request banner ditutup oleh admin."
+  }
+}
