@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ID Saya — Roblox Request Id Cor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#000000;--card:rgba(255,255,255,.03);--border:rgba(255,255,255,.12);--muted:#8a8a8a;--dim:#525252;--gold:#fbbf24;--green:#10b981;--red:#ef4444}
+body{min-height:100vh;background:var(--bg);font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center}
+.wrapper{width:100%;max-width:480px;padding:36px 20px 64px}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:18px}
+.back-link:hover{color:#e5e5e5}
+header{text-align:center;margin-bottom:22px}
+.logo-outer{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#a16207,#fbbf24,#fef08a);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:30px;box-shadow:0 8px 32px rgba(251,191,36,.3)}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.4rem,5vw,1.8rem);font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:6px}
+.subtitle{font-size:13px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:24px 22px;backdrop-filter:blur(40px);box-shadow:0 20px 60px rgba(0,0,0,.5);margin-bottom:18px}
+.field-label{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:block}
+input[type=text]{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;color:#f1f5f9;font-size:14px;font-family:'Inter',sans-serif;outline:none}
+input:focus{border-color:rgba(251,191,36,.6);background:rgba(255,255,255,.05)}
+.btn-primary{width:100%;padding:13px;border:none;border-radius:14px;background:linear-gradient(135deg,#a16207,#fbbf24);color:#111;font-weight:800;font-size:14px;cursor:pointer;margin-top:12px}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.role-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:var(--gold);margin-bottom:14px}
+.actions-row{display:flex;gap:8px;margin-bottom:14px}
+.btn-sec{flex:1;padding:11px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:#e5e5e5;font-weight:700;font-size:12.5px;cursor:pointer;text-align:center;text-decoration:none;display:block}
+.btn-sec:hover{background:rgba(255,255,255,.06)}
+.item{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.item-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.item-title{font-weight:700;font-size:13.5px;color:#f1f5f9}
+.item-type{font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(251,191,36,.12);color:var(--gold);white-space:nowrap}
+.item-date{font-size:11.5px;color:var(--muted);margin-top:4px}
+.item-id{font-family:monospace;font-size:13px;margin-top:8px;word-break:break-all;color:#e5e5e5;background:rgba(0,0,0,.3);border-radius:8px;padding:8px 10px}
+.empty{text-align:center;color:var(--muted);font-size:13px;padding:24px 0}
+.notice{display:flex;gap:10px;padding:13px 14px;border-radius:14px;font-size:12.5px;line-height:1.5;margin-bottom:16px}
+.notice.warn{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);color:#fca5a5}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <a href="/index.html" class="back-link">← Kembali ke halaman request</a>
+  <!-- Muncul cuma saat app lagi MAINTENANCE: halaman ini tetap bisa dipakai, tapi
+       tombol kembali di atas bakal langsung mentok ke layar maintenance. -->
+  <div id="maintNote" class="hidden" style="margin:0 0 14px;padding:11px 14px;border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.1);color:#fcd34d;border-radius:12px;font-size:12.5px;line-height:1.5">
+    🔧 <b>App sedang maintenance.</b> Request belum bisa dilakukan, tapi kamu tetap bisa mengambil ID di halaman ini.
+  </div>
+  <header>
+    <div class="logo-outer">📥</div>
+    <h1>ID Saya</h1>
+    <p class="subtitle">Ambil ID lagu/banner/video privat kamu, khusus VIP &amp; VVIP</p>
+  </header>
+
+  <!-- STEP 1: login username -->
+  <div class="card" id="loginCard">
+    <label class="field-label">Username</label>
+    <input type="text" id="username" placeholder="Username login kamu (sama seperti di web/APK)"/>
+    <button class="btn-primary" id="loginBtn">Buka ID Saya</button>
+  </div>
+
+  <!-- STEP 2: notice bukan vip/vvip -->
+  <div class="notice warn hidden" id="notPremiumNotice">
+    🔒 Halaman ini cuma buat member <b>VIP</b>/<b>VVIP</b>. Username ini masih member biasa —
+    <a href="/vvip.html" style="color:#fca5a5;font-weight:700">upgrade akses dulu di sini</a>.
+  </div>
+
+  <!-- STEP 3: daftar id -->
+  <div class="card hidden" id="listCard">
+    <div id="roleBadgeWrap"></div>
+    <div class="actions-row">
+      <button type="button" class="btn-sec" id="refreshBtn">↻ Refresh</button>
+      <a class="btn-sec" id="downloadBtn">⬇️ Download .txt</a>
+      <a class="btn-sec" href="#" id="switchUserBtn">🔄 Ganti User</a>
+    </div>
+    <div id="idList"><div class="empty">Memuat...</div></div>
+  </div>
+</div>
+
+<script>
+const LOGIN_KEY = 'wanz_username';
+const $ = id => document.getElementById(id);
+const TYPE_LABEL = { song: '🎵 Lagu', banner: '🖼️ Banner', video: '🎬 Video' };
+const ROLE_BADGE = {
+  vip : '<span class="role-badge">💎 VIP</span>',
+  vvip: '<span class="role-badge">🌟 VVIP</span>',
+};
+
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function showCard(id){
+  ['loginCard','listCard'].forEach(c => $(c).classList.toggle('hidden', c !== id));
+}
+
+async function openForUser(username){
+  localStorage.setItem(LOGIN_KEY, username);
+  try {
+    const rr = await fetch('/api/my-role?username=' + encodeURIComponent(username));
+    const role = (await rr.json()).role || 'member';
+    if (role !== 'vip' && role !== 'vvip') {
+      $('notPremiumNotice').classList.remove('hidden');
+      showCard('loginCard');
+      return;
+    }
+    $('notPremiumNotice').classList.add('hidden');
+    $('roleBadgeWrap').innerHTML = ROLE_BADGE[role] || '';
+    $('downloadBtn').href = '/api/my-private-ids/download?username=' + encodeURIComponent(username);
+    showCard('listCard');
+    loadList(username);
+  } catch (e) {
+    alert('Gagal menghubungi server. Coba lagi.');
+  }
+}
+
+async function loadList(username){
+  const list = $('idList');
+  list.innerHTML = '<div class="empty">Memuat...</div>';
+  try {
+    const r = await fetch('/api/my-private-ids?username=' + encodeURIComponent(username));
+    const d = await r.json();
+    renderList(d.items || []);
+  } catch (e) {
+    list.innerHTML = '<div class="empty">Gagal memuat, coba refresh lagi.</div>';
+  }
+}
+
+function renderList(items){
+  const list = $('idList');
+  if (!items.length) { list.innerHTML = '<div class="empty">Belum ada ID request yang masuk.</div>'; return; }
+  list.innerHTML = items.map(it => {
+    const idText = (it.ids && it.ids.length) ? it.ids.join(', ') : (it.id || '-');
+    const tanggal = new Date(it.time).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+    return `<div class="item">
+      <div class="item-top">
+        <span class="item-title">${escapeHtml(it.title || '-')}</span>
+        <span class="item-type">${TYPE_LABEL[it.type] || it.type}</span>
+      </div>
+      <div class="item-date">${tanggal}</div>
+      <div class="item-id">🆔 ${idText}</div>
+    </div>`;
+  }).join('');
+}
+
+$('loginBtn').addEventListener('click', () => {
+  const u = $('username').value.trim();
+  if (!u) return alert('Isi username dulu.');
+  openForUser(u);
+});
+$('username').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
+$('refreshBtn').addEventListener('click', () => {
+  const u = localStorage.getItem(LOGIN_KEY);
+  if (u) loadList(u);
+});
+$('switchUserBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  showCard('loginCard');
+});
+
+// Auto-buka kalau sudah pernah login di halaman utama
+const saved = localStorage.getItem(LOGIN_KEY);
+if (saved) { $('username').value = saved; openForUser(saved); }
+
+// Sinkron status maintenance: flag 'wanz_maint_on' dibaca index.html pas user
+// balik ke menu request, jadi layar maintenance LANGSUNG nongol (tanpa nunggu
+// fetch) -- gak ada celah "masuk ID Saya lalu balik ke menu request".
+const MAINT_FLAG = 'wanz_maint_on';
+async function syncMaintenance(){
+  try {
+    const r = await fetch('/api/status', { cache: 'no-store' });
+    const s = await r.json();
+    const on = s.mode === 'maintenance';
+    try { on ? localStorage.setItem(MAINT_FLAG, '1') : localStorage.removeItem(MAINT_FLAG); } catch {}
+    $('maintNote').classList.toggle('hidden', !on);
+  } catch {}
+}
+syncMaintenance();
+setInterval(syncMaintenance, 30000);
+window.addEventListener('pageshow', syncMaintenance);
+</script>
+</body>
+</html>
