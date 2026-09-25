@@ -1,0 +1,12 @@
+[
+  {
+    "slot": 1,
+    "openTime": null,
+    "closeTime": null
+  },
+  {
+    "slot": 2,
+    "openTime": "18:00",
+    "closeTime": null
+  }
+]
